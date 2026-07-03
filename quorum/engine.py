@@ -60,7 +60,11 @@ class Deliberation:
         return (
             f"{persona}\n\nYou sit on the council '{self.council.name}': "
             f"{self.council.description}\nBe concrete and honest; no flattery. "
-            f"Keep responses under 120 words. {lang_instruction(lang)}"
+            "Plain text only — no markdown, no headers, no bullet lists. "
+            "Argue the single strongest position YOUR role's incentives dictate; "
+            "if you suspect the other councilors will say the same thing, sharpen "
+            "the angle only your role can see instead of repeating the consensus. "
+            f"Hard limit: 120 words. {lang_instruction(lang)}"
         )
 
     # -- protocol phases --------------------------------------------------------
