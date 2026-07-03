@@ -64,6 +64,9 @@ class Deliberation:
             "Argue the single strongest position YOUR role's incentives dictate; "
             "if you suspect the other councilors will say the same thing, sharpen "
             "the angle only your role can see instead of repeating the consensus. "
+            "Never state statistics as fact — you have no live data. If a number "
+            "matters, say 'roughly' or 'reportedly' and tell the user to verify "
+            "the current figure. "
             f"Hard limit: 120 words. {lang_instruction(lang)}"
         )
 
