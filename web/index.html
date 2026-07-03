@@ -76,6 +76,7 @@
       <input type="text" id="email" placeholder="you@example.com">
       <button onclick="joinWaitlist()" id="wl-btn"></button>
     </div>
+    <div id="consent" style="font-size:.75rem;color:var(--dim);margin-top:.5rem;line-height:1.4"></div>
   </div>
 </main>
 <footer id="footer"></footer>
@@ -88,6 +89,7 @@ const I18N = {
     council:"Council", title:"Your question", body:"The situation (any language — the council answers in yours)",
     go:"🏛️ Convene the council", running:"The council is deliberating…",
     seeds:"Try one:", wait:"Get the hosted version + new councils first:", wlbtn:"Join waitlist", wldone:"You're in ✓",
+    consent:"By joining, you consent to us storing your email solely to contact you about Quorum. Removal anytime on request — never shared, never used for training.",
     card:"⬇️ Download verdict card", stats:n=>`${n} councils convened`,
     phases:{openings:"Opening positions",cross_exam:"Cross-examination",vote:"The vote",verdict:"Verdict"},
     dissent:"Dissenting view", plan:"Action plan", verdictT:"⚖️ Verdict",
@@ -99,6 +101,7 @@ const I18N = {
     council:"议事会", title:"你的问题", body:"具体情况（任何语言——议事会用你的语言回答）",
     go:"🏛️ 召集议事会", running:"议事会正在审议…",
     seeds:"试试这些：", wait:"抢先体验托管版和新议事会：", wlbtn:"加入等候名单", wldone:"已加入 ✓",
+    consent:"加入即表示同意我们存储你的邮箱，仅用于 Quorum 相关通知。可随时要求删除——绝不共享，绝不用于训练。",
     card:"⬇️ 下载裁定卡", stats:n=>`已召开 ${n} 次议事会`,
     phases:{openings:"各方陈述",cross_exam:"交叉质询",vote:"投票",verdict:"最终裁定"},
     dissent:"异议观点", plan:"行动计划", verdictT:"⚖️ 最终裁定",
@@ -137,6 +140,7 @@ function render(){
   go.textContent = x.go;
   document.getElementById("l-wait").textContent = x.wait;
   document.getElementById("wl-btn").textContent = x.wlbtn;
+  document.getElementById("consent").textContent = x.consent;
   footer.textContent = x.footer;
   const s = document.getElementById("seeds"); s.innerHTML = `<span style="align-self:center;font-size:.85rem;color:var(--dim)">${x.seeds}</span>`;
   SEEDS.forEach(seed=>{
