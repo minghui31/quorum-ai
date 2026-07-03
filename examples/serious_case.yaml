@@ -1,0 +1,15 @@
+council: careers
+title: "Take the safe big-company offer, or bet on my own startup for an O-1?"
+language: auto
+case: |
+  I'm an international student in the US graduating in December. I have two
+  paths. Path A: a solid mid-level engineering offer at a large company that
+  sponsors H-1B (lottery odds apply). Path B: go full-time on my own startup
+  during OPT, aiming to build an O-1 evidence portfolio (press, open-source
+  traction, judging, original contributions) within ~14 months. I have some
+  savings, early users, and one open-source project gaining stars. Risk
+  tolerance: medium-high. Family expects stability. What should I do?
+context:
+  note: >
+    Sponsor data can be injected here by the host app (e.g. Summit's sponsor
+    database) — company names, sponsorship history, approval patterns.

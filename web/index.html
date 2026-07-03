@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Quorum — a council of AI agents deliberates your decision</title>
+<style>
+  :root{
+    --navy:#0b2447; --navy2:#123262; --ink:#0f1c33; --paper:#f7f9fc;
+    --amber:#e8a13d; --amber2:#f6c37b; --green:#2e9e6b; --red:#c94f4f;
+    --line:rgba(11,36,71,.12); --dim:#5a6b85;
+  }
+  *{box-sizing:border-box} body{margin:0;font-family:-apple-system,"Segoe UI","PingFang SC","Noto Sans SC",sans-serif;background:var(--paper);color:var(--ink)}
+  header{background:linear-gradient(135deg,var(--navy),var(--navy2));color:#fff;padding:2.2rem 1.5rem 2rem;text-align:center}
+  header h1{margin:0;font-size:2rem;letter-spacing:.5px}
+  header h1 .gavel{color:var(--amber)}
+  header p{margin:.5rem auto 0;max-width:620px;color:#c8d5ea;font-size:1.02rem}
+  .langbtn{position:absolute;top:1rem;right:1rem;background:rgba(255,255,255,.12);color:#fff;border:1px solid rgba(255,255,255,.3);border-radius:20px;padding:.35rem .9rem;cursor:pointer;font-size:.9rem}
+  .stats{font-size:.85rem;color:var(--amber2);margin-top:.6rem}
+  main{max-width:820px;margin:0 auto;padding:1.5rem}
+  .card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:1.2rem;margin-bottom:1.2rem;box-shadow:0 2px 10px rgba(11,36,71,.05)}
+  label{font-weight:600;font-size:.9rem;display:block;margin:.6rem 0 .3rem}
+  input[type=text],textarea,select{width:100%;padding:.65rem .8rem;border:1px solid var(--line);border-radius:9px;font:inherit;background:#fff}
+  textarea{min-height:110px;resize:vertical}
+  .seeds{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.8rem}
+  .seed{background:#eef3fa;border:1px solid var(--line);border-radius:20px;padding:.35rem .85rem;font-size:.85rem;cursor:pointer}
+  .seed:hover{background:#e2ebf7}
+  .go{margin-top:1rem;width:100%;background:var(--navy);color:#fff;border:none;border-radius:10px;padding:.85rem;font-size:1.05rem;font-weight:700;cursor:pointer}
+  .go:hover{background:var(--navy2)} .go:disabled{opacity:.55;cursor:wait}
+  .phase{margin:1.3rem 0 .5rem;font-weight:800;color:var(--navy);font-size:.85rem;letter-spacing:.12em;text-transform:uppercase;border-bottom:2px solid var(--amber);padding-bottom:.25rem}
+  .msg{display:flex;gap:.7rem;margin:.7rem 0;animation:pop .3s ease}
+  @keyframes pop{from{opacity:0;transform:translateY(6px)}to{opacity:1}}
+  .avatar{font-size:1.5rem;flex:none;width:2.4rem;height:2.4rem;display:flex;align-items:center;justify-content:center;background:#eef3fa;border-radius:50%}
+  .bubble{background:#fff;border:1px solid var(--line);border-radius:12px;padding:.6rem .85rem;flex:1}
+  .bubble .who{font-weight:700;font-size:.85rem;color:var(--navy)}
+  .bubble .txt{font-size:.93rem;line-height:1.5;margin-top:.15rem;white-space:pre-wrap}
+  .ballot{border-left:4px solid var(--amber)}
+  .stance-support{color:var(--green);font-weight:700}.stance-oppose{color:var(--red);font-weight:700}.stance-conditional{color:var(--amber);font-weight:700}
+  .verdict{background:linear-gradient(135deg,var(--navy),var(--navy2));color:#fff;border-radius:14px;padding:1.3rem;margin-top:1.2rem}
+  .verdict h2{margin:0 0 .4rem;color:var(--amber2)}
+  .verdict .plan li{margin:.3rem 0}
+  .verdict .dissent{background:rgba(255,255,255,.08);border-left:4px solid var(--amber);padding:.6rem .8rem;border-radius:8px;margin:.8rem 0;font-size:.92rem}
+  .verdict .disc{font-size:.78rem;color:#b9c8e0;margin-top:.9rem;line-height:1.45;white-space:pre-wrap}
+  .cardbtn{margin-top:1rem;background:var(--amber);color:var(--ink);border:none;border-radius:10px;padding:.7rem 1.2rem;font-weight:700;cursor:pointer;font-size:.95rem}
+  canvas{display:none}
+  .waitlist{display:flex;gap:.5rem;margin-top:.4rem}
+  .waitlist input{flex:1}
+  .waitlist button{background:var(--navy);color:#fff;border:none;border-radius:9px;padding:0 1.1rem;font-weight:700;cursor:pointer}
+  footer{text-align:center;color:var(--dim);font-size:.8rem;padding:1.5rem;line-height:1.6}
+  .typing{color:var(--dim);font-style:italic;font-size:.9rem;margin:.5rem 0}
+</style>
+</head>
+<body>
+<header style="position:relative">
+  <button class="langbtn" id="langbtn" onclick="toggleLang()">中文</button>
+  <h1><span class="gavel">⚖️</span> QUORUM</h1>
+  <p id="tagline"></p>
+  <div class="stats" id="stats"></div>
+</header>
+<main>
+  <div class="card">
+    <label id="l-council"></label>
+    <select id="council"></select>
+    <label id="l-title"></label>
+    <input type="text" id="title">
+    <label id="l-body"></label>
+    <textarea id="body"></textarea>
+    <div class="seeds" id="seeds"></div>
+    <button class="go" id="go" onclick="convene()"></button>
+  </div>
+  <div id="feed"></div>
+  <div id="verdict"></div>
+  <div class="card">
+    <label id="l-wait"></label>
+    <div class="waitlist">
+      <input type="text" id="email" placeholder="you@example.com">
+      <button onclick="joinWaitlist()" id="wl-btn"></button>
+    </div>
+  </div>
+</main>
+<footer id="footer"></footer>
+<canvas id="cardCanvas" width="1200" height="630"></canvas>
+
+<script>
+const I18N = {
+  en: {
+    tagline:"Five AI agents — with different jobs, incentives, and doubts — deliberate your decision in the open. Dissent included.",
+    council:"Council", title:"Your question", body:"The situation (any language — the council answers in yours)",
+    go:"🏛️ Convene the council", running:"The council is deliberating…",
+    seeds:"Try one:", wait:"Get the hosted version + new councils first:", wlbtn:"Join waitlist", wldone:"You're in ✓",
+    card:"⬇️ Download verdict card", stats:n=>`${n} councils convened`,
+    phases:{openings:"Opening positions",cross_exam:"Cross-examination",vote:"The vote",verdict:"Verdict"},
+    dissent:"Dissenting view", plan:"Action plan", verdictT:"⚖️ Verdict",
+    footer:"Open source (AGPL) · built on CAMEL-AI · Illustrative guidance, not a guarantee — never legal, immigration, or financial advice.",
+    typing:"is thinking…"
+  },
+  zh: {
+    tagline:"五个立场、职责、疑虑各不相同的 AI 智能体，公开审议你的决定——包括反对意见。",
+    council:"议事会", title:"你的问题", body:"具体情况（任何语言——议事会用你的语言回答）",
+    go:"🏛️ 召集议事会", running:"议事会正在审议…",
+    seeds:"试试这些：", wait:"抢先体验托管版和新议事会：", wlbtn:"加入等候名单", wldone:"已加入 ✓",
+    card:"⬇️ 下载裁定卡", stats:n=>`已召开 ${n} 次议事会`,
+    phases:{openings:"各方陈述",cross_exam:"交叉质询",vote:"投票",verdict:"最终裁定"},
+    dissent:"异议观点", plan:"行动计划", verdictT:"⚖️ 最终裁定",
+    footer:"开源（AGPL）· 基于 CAMEL-AI · 仅供参考，不构成保证——绝非法律、移民或财务建议。",
+    typing:"思考中…"
+  }
+};
+const SEEDS = [
+  {label:{en:"🎯 Offer A vs Offer B",zh:"🎯 Offer A 还是 Offer B"},council:"careers",
+   title:{en:"Offer A (big pay, boring) vs Offer B (less pay, rocket ship)?",zh:"接大厂高薪但无聊的 A，还是去火箭船创业公司 B？"},
+   body:{en:"Offer A: large stable company, 30% more pay, slow track, reliable visa sponsorship. Offer B: Series-B startup, more equity, I'd own a product area, sponsorship less proven. Three years into my career; want staff engineer or founder by 30.",
+         zh:"A：大公司，薪水高 30%，晋升慢，签证支持稳。B：刚融 B 轮的创业公司，期权多，能独立负责一块产品，签证支持没那么确定。工作三年，想在 30 岁前做到 staff 或自己创业。"}},
+  {label:{en:"🛂 Startup or safe job (visa)",zh:"🛂 创业还是求稳（签证）"},council:"careers",
+   title:{en:"Take the safe offer, or bet on my startup for an O-1?",zh:"接稳妥 offer，还是全职创业冲 O-1？"},
+   body:{en:"Graduating in December. Path A: solid offer at a company that sponsors H-1B (lottery). Path B: build my own startup on OPT and assemble an O-1 evidence portfolio in ~14 months. Some savings, early users, an open-source project gaining stars. Family expects stability.",
+         zh:"12 月毕业。A：一家支持 H-1B 的公司的稳妥 offer（要抽签）。B：OPT 期间全职做自己的创业项目，约 14 个月内攒出 O-1 证据组合。有积蓄、早期用户和一个正在涨星的开源项目。家里希望求稳。"}},
+  {label:{en:"🏮 红楼梦 ending",zh:"🏮 红楼梦的结局"},council:"book_club",
+   title:{en:"红楼梦: was 宝玉 & 黛玉 ever possible?",zh:"《红楼梦》：宝玉和黛玉真的没有可能吗？"},
+   body:{en:"如果曹雪芹写完了《红楼梦》，按前八十回的判词、伏笔与人物逻辑，宝玉与黛玉是否注定无缘？高鹗续书的结局是背叛还是必然？",
+         zh:"如果曹雪芹写完了《红楼梦》，按前八十回的判词、伏笔与人物逻辑，宝玉与黛玉是否注定无缘？高鹗续书的结局是背叛还是必然？"}},
+  {label:{en:"🍜 Hotpot vs pizza",zh:"🍜 火锅还是披萨"},council:"dinner",
+   title:{en:"Hotpot again, or finally try that pizza place?",zh:"再吃一次火锅，还是终于去试试那家披萨？"},
+   body:{en:"Friday night, raining, third hotpot this week. Famous pizza place is 20 minutes away; hotpot is 5 minutes away and tastes like home.",
+         zh:"周五晚上，下雨，这周已经吃了三次火锅。名气很大的披萨店在 20 分钟外；火锅店 5 分钟就到，而且是家的味道。"}},
+];
+let lang = "en", lastVerdict = null, lastTitle = "";
+
+function t(){ return I18N[lang]; }
+function toggleLang(){ lang = lang==="en" ? "zh" : "en"; document.getElementById("langbtn").textContent = lang==="en"?"中文":"EN"; render(); }
+function render(){
+  const x = t();
+  tagline.textContent = x.tagline;
+  document.getElementById("l-council").textContent = x.council;
+  document.getElementById("l-title").textContent = x.title;
+  document.getElementById("l-body").textContent = x.body;
+  go.textContent = x.go;
+  document.getElementById("l-wait").textContent = x.wait;
+  document.getElementById("wl-btn").textContent = x.wlbtn;
+  footer.textContent = x.footer;
+  const s = document.getElementById("seeds"); s.innerHTML = `<span style="align-self:center;font-size:.85rem;color:var(--dim)">${x.seeds}</span>`;
+  SEEDS.forEach(seed=>{
+    const b = document.createElement("button"); b.className="seed"; b.textContent = seed.label[lang];
+    b.onclick = ()=>{ council.value=seed.council; title.value=seed.title[lang]; document.getElementById("body").value=seed.body[lang]; };
+    s.appendChild(b);
+  });
+}
+async function loadCouncils(){
+  const cs = await (await fetch("/councils")).json();
+  council.innerHTML = cs.map(c=>`<option value="${c.name}">${c.name} — ${c.councilors.map(m=>m.emoji).join(" ")}</option>`).join("");
+  council.value = "careers";
+}
+async function loadStats(){
+  try{ const s = await (await fetch("/stats")).json(); stats.textContent = t().stats(s.councils_run); }catch(e){}
+}
+function convene(){
+  const body = document.getElementById("body").value.trim();
+  if(!body) return;
+  lastTitle = title.value.trim() || body.slice(0,60);
+  feed.innerHTML = ""; verdict.innerHTML = ""; lastVerdict = null;
+  go.disabled = true; go.textContent = t().running;
+  const url = `/deliberate/stream?title=${encodeURIComponent(lastTitle)}&body=${encodeURIComponent(body)}&council=${encodeURIComponent(council.value)}`;
+  const es = new EventSource(url);
+  const done = ()=>{ es.close(); go.disabled=false; go.textContent=t().go; loadStats(); };
+  es.addEventListener("phase", e=>{
+    const d = JSON.parse(e.data);
+    feed.insertAdjacentHTML("beforeend", `<div class="phase">${t().phases[d.phase]||d.phase}</div>`);
+  });
+  es.addEventListener("message", e=>{
+    const d = JSON.parse(e.data);
+    feed.insertAdjacentHTML("beforeend",
+      `<div class="msg"><div class="avatar">${d.emoji||"🤖"}</div><div class="bubble"><div class="who">${d.role}</div><div class="txt">${esc(d.text)}</div></div></div>`);
+    window.scrollTo({top:document.body.scrollHeight,behavior:"smooth"});
+  });
+  es.addEventListener("ballot", e=>{
+    const d = JSON.parse(e.data);
+    feed.insertAdjacentHTML("beforeend",
+      `<div class="msg"><div class="avatar">${d.emoji||"🗳️"}</div><div class="bubble ballot"><div class="who">${d.role} — <span class="stance-${d.stance}">${d.stance}</span> · ${(d.confidence*100).toFixed(0)}%</div><div class="txt">${esc(d.reasoning)}</div></div></div>`);
+  });
+  es.addEventListener("verdict", e=>{
+    const d = JSON.parse(e.data); lastVerdict = d;
+    const tally = Object.entries(d.vote_tally).map(([k,v])=>`${{support:"✅",oppose:"❌",conditional:"🤔"}[k]||"❓"} ${k} × ${v}`).join("   ");
+    verdict.innerHTML = `<div class="verdict">
+      <h2>${t().verdictT}</h2>
+      <div style="font-size:1.2rem;font-weight:800">${esc(d.decision)}</div>
+      <p>${esc(d.summary)}</p>
+      <div style="font-size:.95rem">${tally}</div>
+      <div class="dissent"><b>${t().dissent}:</b> ${esc(d.dissent)}</div>
+      <b>${t().plan}:</b><ol class="plan">${d.action_plan.map(s=>`<li>${esc(s)}</li>`).join("")}</ol>
+      <div class="disc">${esc(d.disclaimer)}</div>
+      <button class="cardbtn" onclick="downloadCard()">${t().card}</button>
+    </div>`;
+    done();
+  });
+  es.addEventListener("error", e=>{ if(e.data){ const d=JSON.parse(e.data); feed.insertAdjacentHTML("beforeend",`<div class="typing">⚠️ ${esc(d.message||"error")}</div>`);} done(); });
+  es.onerror = done;
+}
+function esc(s){ const d=document.createElement("div"); d.textContent=s??""; return d.innerHTML; }
+
+/* ---- the shareable verdict card (1200x630 PNG) ---- */
+function wrap(ctx, text, x, y, maxW, lh, maxLines){
+  const words = /[一-鿿]/.test(text) ? text.split("") : text.split(" ");
+  const joiner = /[一-鿿]/.test(text) ? "" : " ";
+  let line = "", lines = 0;
+  for(const w of words){
+    const test = line ? line + joiner + w : w;
+    if(ctx.measureText(test).width > maxW && line){
+      ctx.fillText(lines===maxLines-1 ? line+"…" : line, x, y); y += lh; lines++;
+      if(lines>=maxLines) return y;
+      line = w;
+    } else line = test;
+  }
+  if(line){ ctx.fillText(line, x, y); y += lh; }
+  return y;
+}
+function downloadCard(){
+  if(!lastVerdict) return;
+  const c = cardCanvas, ctx = c.getContext("2d");
+  const g = ctx.createLinearGradient(0,0,1200,630); g.addColorStop(0,"#0b2447"); g.addColorStop(1,"#123262");
+  ctx.fillStyle = g; ctx.fillRect(0,0,1200,630);
+  ctx.fillStyle = "#e8a13d"; ctx.fillRect(0,0,1200,8);
+  ctx.fillStyle = "#e8a13d"; ctx.font = "bold 34px sans-serif"; ctx.fillText("⚖️ QUORUM", 60, 78);
+  ctx.fillStyle = "#8fa5c9"; ctx.font = "22px sans-serif";
+  ctx.fillText(lang==="zh"?"AI 议事会已作出裁定":"The AI council has ruled", 250, 78);
+  ctx.fillStyle = "#c8d5ea"; ctx.font = "26px sans-serif";
+  let y = wrap(ctx, lastTitle, 60, 140, 1080, 36, 2);
+  ctx.fillStyle = "#ffffff"; ctx.font = "bold 40px sans-serif";
+  y = wrap(ctx, lastVerdict.decision, 60, y+40, 1080, 52, 3);
+  const tally = Object.entries(lastVerdict.vote_tally).map(([k,v])=>`${{support:"✅",oppose:"❌",conditional:"🤔"}[k]||"❓"} ${v}`).join("   ");
+  ctx.fillStyle = "#e8a13d"; ctx.font = "bold 30px sans-serif"; ctx.fillText(tally, 60, y+34); y += 60;
+  ctx.fillStyle = "#c8d5ea"; ctx.font = "24px sans-serif";
+  const firstStep = (lastVerdict.action_plan[0]||"");
+  y = wrap(ctx, (lang==="zh"?"第一步：":"First step: ") + firstStep, 60, y+26, 1080, 34, 2);
+  if(lastVerdict.dissent){
+    ctx.fillStyle = "#8fa5c9"; ctx.font = "italic 22px sans-serif";
+    wrap(ctx, (lang==="zh"?"异议：":"Dissent: ") + lastVerdict.dissent, 60, y+26, 1080, 30, 2);
+  }
+  ctx.fillStyle = "#5a749e"; ctx.font = "20px sans-serif";
+  ctx.fillText(lang==="zh"?"仅供参考，不构成保证 · github.com/minghui31/quorum-ai":"Illustrative guidance, not a guarantee · github.com/minghui31/quorum-ai", 60, 590);
+  const a = document.createElement("a");
+  a.download = "quorum-verdict.png"; a.href = c.toDataURL("image/png"); a.click();
+}
+async function joinWaitlist(){
+  const em = email.value.trim(); if(!em) return;
+  const r = await fetch("/waitlist",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({email:em})});
+  if(r.ok) document.getElementById("wl-btn").textContent = t().wldone;
+}
+render(); loadCouncils(); loadStats();
+</script>
+</body>
+</html>
