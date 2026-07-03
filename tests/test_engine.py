@@ -51,3 +51,20 @@ def test_all_builtin_councils_load():
     for name in ("careers", "dinner", "book_club"):
         c = load_council(name)
         assert c.councilors, name
+
+
+def test_monte_carlo_ensemble():
+    from quorum.montecarlo import simulate
+
+    ens = simulate(
+        Case(title="A or B?", body="Two options, council.", council="dinner"),
+        load_council("dinner"),
+        runs=8,
+        backend=MockBackend(),
+    )
+    assert ens.runs == 8
+    assert sum(ens.outcome_dist.values()) == 8
+    assert ens.modal_outcome in ("support", "oppose", "conditional", "split")
+    assert 0.0 <= ens.flip_rate <= 1.0
+    assert len(ens.outcome_dist) >= 2, "salting should decorrelate mock runs"
+    assert "not a guarantee" in ens.disclaimer

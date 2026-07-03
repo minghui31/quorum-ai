@@ -75,6 +75,47 @@ def _load_case(path: str) -> Case:
     )
 
 
+_STANCE_ICON = {"support": "✅", "oppose": "❌", "conditional": "🤔", "split": "⚖️"}
+
+
+def _simulate(args) -> int:
+    from . import load_council
+    from .montecarlo import simulate
+
+    case = _load_case(args.case)
+    council = load_council(case.council)
+    done: list = []
+
+    def render(e: dict) -> None:
+        if e["type"] == "run":
+            done.append(e)
+            icon = _STANCE_ICON.get(e["stance"], "❓")
+            _print(f"  council {len(done):>3}/{e['total']} resolved → {icon} {e['stance']}")
+
+    _print(f"\n⚖️  QUORUM ENSEMBLE · {case.title} · {args.runs} councils convening…", "bold")
+    try:
+        ens = simulate(case, council, runs=args.runs,
+                       backend=auto_backend(args.backend),
+                       on_event=None if args.json else render)
+    except Exception as exc:
+        if "401" in str(exc):
+            _print("\n❌ Authentication failed (401) — see `quorum demo` help; or use --backend mock.", "bold red")
+            return 1
+        raise
+    if args.json:
+        print(json.dumps(ens.to_dict(), ensure_ascii=False, indent=2))
+        return 0
+    _print("\n━━ Verdict distribution ━━", "bold cyan")
+    for stance, n in sorted(ens.outcome_dist.items(), key=lambda kv: -kv[1]):
+        bar = "█" * round(30 * n / ens.runs)
+        _print(f" {_STANCE_ICON.get(stance, '❓')} {stance:<12} {bar} {n}/{ens.runs} ({n / ens.runs:.0%})")
+    _print(f"\n Modal outcome: {ens.modal_outcome}  ·  flip rate {ens.flip_rate:.0%}  ·  avg ballot confidence {ens.avg_confidence:.0%}")
+    if ens.recurring_dissent:
+        _print(f" Recurring dissent: {ens.recurring_dissent[0]}")
+    _print(f"\n{ens.disclaimer}")
+    return 0
+
+
 def main(argv: list[str] | None = None) -> int:
     load_env_file()  # picks up ANTHROPIC_API_KEY etc. from .env — no export needed
     p = argparse.ArgumentParser(prog="quorum", description="A council of AI agents deliberates your decision.")
@@ -90,7 +131,16 @@ def main(argv: list[str] | None = None) -> int:
     demo.add_argument("--serious", action="store_true", help="Run the serious careers demo instead")
     demo.add_argument("--json", action="store_true")
 
+    sim = sub.add_parser("simulate", help="Monte-Carlo: convene N councils, show the verdict distribution")
+    sim.add_argument("case", help="Path to a case YAML file")
+    sim.add_argument("--runs", type=int, default=10)
+    sim.add_argument("--backend", choices=["anthropic", "openai", "camel", "mock"], default=None)
+    sim.add_argument("--json", action="store_true")
+
     args = p.parse_args(argv)
+
+    if args.cmd == "simulate":
+        return _simulate(args)
 
     if args.cmd == "demo":
         examples = Path(__file__).parent.parent / "examples"

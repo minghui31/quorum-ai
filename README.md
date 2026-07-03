@@ -42,6 +42,30 @@ structural:
 - **Ballots with confidence, verdicts with dissent** — the minority view survives synthesis
 - **Councils are YAML** — define your own five stakeholders in 20 lines
 
+## Convene one council — or fifty
+
+A single verdict tells you an answer. An **ensemble** tells you how contested it is:
+
+```bash
+quorum simulate examples/offer_case.yaml --runs 20
+```
+
+```
+━━ Verdict distribution ━━
+ ✅ support      ██████████████████ 12/20 (60%)
+ 🤔 conditional  ██████ 5/20 (25%)
+ ❌ oppose       ███ 3/20 (15%)
+
+ Modal outcome: support · flip rate 40% · avg ballot confidence 76%
+ Recurring dissent: "the timeline is too optimistic — wait one cycle"
+```
+
+Monte-Carlo deliberation runs N independent councils in parallel (`--runs 20`
+= 120 agent instances) and reports the *distribution*: the modal outcome, the
+flip rate, and the dissent that keeps recurring across runs. For real decisions,
+**the shape of the disagreement is the information.** Cost-guarded by
+`QUORUM_MAX_RUNS` (default cap 50); free in mock mode.
+
 ## Quickstart (zero API keys needed)
 
 ```bash

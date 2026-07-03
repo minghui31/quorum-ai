@@ -103,6 +103,16 @@ def run(case: CaseIn) -> dict:
     return verdict
 
 
+@app.post("/simulate")
+def run_ensemble(case: CaseIn, runs: int = 10) -> dict:
+    """Monte-Carlo: N independent councils → verdict distribution."""
+    from .montecarlo import simulate
+
+    ens = simulate(case.to_case(), load_council(case.council), runs=runs)
+    _bump()
+    return ens.to_dict()
+
+
 @app.get("/deliberate/stream")
 async def stream(title: str, body: str, council: str = "careers", language: str = "auto"):
     """SSE stream of deliberation events — the 'watch them argue' feed."""

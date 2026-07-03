@@ -41,3 +41,8 @@
   investor DM template, star/upvote ethics rules, asset checklist.
 - First real-API run done (Jul 3 night): personas distinct, skeptic sharp; tuned
   (no markdown, hard word cap, anti-pile-on instruction).
+- Monte-Carlo deliberation shipped: quorum/montecarlo.py (ensemble of N
+  independent councils → outcome distribution, flip rate, recurring dissent),
+  CLI `quorum simulate --runs N` with distribution bars, POST /simulate,
+  salted-backend decorrelation, QUORUM_MAX_RUNS cost cap, test added.
+  README (EN+zh): "Convene one council — or fifty" section.
