@@ -99,11 +99,24 @@ def main(argv: list[str] | None = None) -> int:
         case = _load_case(args.case)
 
     lang_holder: dict = {}
-    verdict = deliberate(
-        case,
-        backend=auto_backend(args.backend),
-        on_event=None if args.json else (lambda e: _render(e, lang_holder)),
-    )
+    try:
+        verdict = deliberate(
+            case,
+            backend=auto_backend(args.backend),
+            on_event=None if args.json else (lambda e: _render(e, lang_holder)),
+        )
+    except Exception as exc:
+        msg = str(exc)
+        if "401" in msg:
+            _print("\n❌ Authentication failed (401): your API key is missing or invalid.", "bold red")
+            _print("   Check it:   echo $ANTHROPIC_API_KEY   (should start with sk-ant-)")
+            _print("   Set it:     export ANTHROPIC_API_KEY=sk-ant-...   (no quotes or trailing text)")
+            _print("   No key?     quorum demo --backend mock   runs free, instantly.")
+            return 1
+        if "404" in msg and "model" in msg.lower():
+            _print("\n❌ Model not found. Try:   export QUORUM_MODEL=claude-sonnet-5", "bold red")
+            return 1
+        raise
     if args.json:
         print(json.dumps(verdict.to_dict(), ensure_ascii=False, indent=2))
     return 0
