@@ -90,7 +90,8 @@ const I18N = {
     go:"🏛️ Convene the council", running:"The council is deliberating…",
     seeds:"Try one:", wait:"Get the hosted version + new councils first:", wlbtn:"Join waitlist", wldone:"You're in ✓",
     consent:"By joining, you consent to us storing your email solely to contact you about Quorum. Removal anytime on request — never shared, never used for training.",
-    card:"⬇️ Download verdict card", stats:n=>`${n} councils convened`,
+    card:"⬇️ Verdict card", card916:"⬇️ Story card (9:16)", copyShare:"📋 Copy share text", copied:"Copied ✓",
+    stats:n=>`${n} councils convened`,
     phases:{openings:"Opening positions",cross_exam:"Cross-examination",vote:"The vote",verdict:"Verdict"},
     dissent:"Dissenting view", plan:"Action plan", verdictT:"⚖️ Verdict",
     footer:"Open source (AGPL) · built on CAMEL-AI · Illustrative guidance, not a guarantee — never legal, immigration, or financial advice.",
@@ -102,7 +103,8 @@ const I18N = {
     go:"🏛️ 召集议事会", running:"议事会正在审议…",
     seeds:"试试这些：", wait:"抢先体验托管版和新议事会：", wlbtn:"加入等候名单", wldone:"已加入 ✓",
     consent:"加入即表示同意我们存储你的邮箱，仅用于 Quorum 相关通知。可随时要求删除——绝不共享，绝不用于训练。",
-    card:"⬇️ 下载裁定卡", stats:n=>`已召开 ${n} 次议事会`,
+    card:"⬇️ 裁定卡", card916:"⬇️ 小红书卡片 (9:16)", copyShare:"📋 复制分享文案", copied:"已复制 ✓",
+    stats:n=>`已召开 ${n} 次议事会`,
     phases:{openings:"各方陈述",cross_exam:"交叉质询",vote:"投票",verdict:"最终裁定"},
     dissent:"异议观点", plan:"行动计划", verdictT:"⚖️ 最终裁定",
     footer:"开源（AGPL）· 基于 CAMEL-AI · 仅供参考，不构成保证——绝非法律、移民或财务建议。",
@@ -122,6 +124,10 @@ const SEEDS = [
    title:{en:"红楼梦: was 宝玉 & 黛玉 ever possible?",zh:"《红楼梦》：宝玉和黛玉真的没有可能吗？"},
    body:{en:"如果曹雪芹写完了《红楼梦》，按前八十回的判词、伏笔与人物逻辑，宝玉与黛玉是否注定无缘？高鹗续书的结局是背叛还是必然？",
          zh:"如果曹雪芹写完了《红楼梦》，按前八十回的判词、伏笔与人物逻辑，宝玉与黛玉是否注定无缘？高鹗续书的结局是背叛还是必然？"}},
+  {label:{en:"🏠 Stay abroad or go home",zh:"🏠 留下还是回国"},council:"careers",
+   title:{en:"Build my career abroad, or go home where family is?",zh:"留在国外打拼，还是回国陪家人？"},
+   body:{en:"Five years abroad. Career is growing here but visa stress never ends; back home my parents are aging, the market is tougher but I'd belong. Both choices cost something I can't get back.",
+         zh:"在国外五年了。事业在上升期，但签证的焦虑永远悬着；回国的话父母在变老，市场更卷，但那里不用解释我是谁。两条路都要付出拿不回来的东西。"}},
   {label:{en:"🍜 Hotpot vs pizza",zh:"🍜 火锅还是披萨"},council:"dinner",
    title:{en:"Hotpot again, or finally try that pizza place?",zh:"再吃一次火锅，还是终于去试试那家披萨？"},
    body:{en:"Friday night, raining, third hotpot this week. Famous pizza place is 20 minutes away; hotpot is 5 minutes away and tastes like home.",
@@ -192,7 +198,9 @@ function convene(){
       <div class="dissent"><b>${t().dissent}:</b> ${esc(d.dissent)}</div>
       <b>${t().plan}:</b><ol class="plan">${d.action_plan.map(s=>`<li>${esc(s)}</li>`).join("")}</ol>
       <div class="disc">${esc(d.disclaimer)}</div>
-      <button class="cardbtn" onclick="downloadCard()">${t().card}</button>
+      <button class="cardbtn" onclick="downloadCard(false)">${t().card}</button>
+      <button class="cardbtn" onclick="downloadCard(true)">${t().card916}</button>
+      <button class="cardbtn" id="sharebtn" onclick="copyShare()">${t().copyShare}</button>
     </div>`;
     done();
   });
@@ -217,32 +225,62 @@ function wrap(ctx, text, x, y, maxW, lh, maxLines){
   if(line){ ctx.fillText(line, x, y); y += lh; }
   return y;
 }
-function downloadCard(){
-  if(!lastVerdict) return;
-  const c = cardCanvas, ctx = c.getContext("2d");
-  const g = ctx.createLinearGradient(0,0,1200,630); g.addColorStop(0,"#0b2447"); g.addColorStop(1,"#123262");
-  ctx.fillStyle = g; ctx.fillRect(0,0,1200,630);
-  ctx.fillStyle = "#e8a13d"; ctx.fillRect(0,0,1200,8);
-  ctx.fillStyle = "#e8a13d"; ctx.font = "bold 34px sans-serif"; ctx.fillText("⚖️ QUORUM", 60, 78);
-  ctx.fillStyle = "#8fa5c9"; ctx.font = "22px sans-serif";
-  ctx.fillText(lang==="zh"?"AI 议事会已作出裁定":"The AI council has ruled", 250, 78);
-  ctx.fillStyle = "#c8d5ea"; ctx.font = "26px sans-serif";
-  let y = wrap(ctx, lastTitle, 60, 140, 1080, 36, 2);
-  ctx.fillStyle = "#ffffff"; ctx.font = "bold 40px sans-serif";
-  y = wrap(ctx, lastVerdict.decision, 60, y+40, 1080, 52, 3);
-  const tally = Object.entries(lastVerdict.vote_tally).map(([k,v])=>`${{support:"✅",oppose:"❌",conditional:"🤔"}[k]||"❓"} ${v}`).join("   ");
-  ctx.fillStyle = "#e8a13d"; ctx.font = "bold 30px sans-serif"; ctx.fillText(tally, 60, y+34); y += 60;
-  ctx.fillStyle = "#c8d5ea"; ctx.font = "24px sans-serif";
-  const firstStep = (lastVerdict.action_plan[0]||"");
-  y = wrap(ctx, (lang==="zh"?"第一步：":"First step: ") + firstStep, 60, y+26, 1080, 34, 2);
-  if(lastVerdict.dissent){
-    ctx.fillStyle = "#8fa5c9"; ctx.font = "italic 22px sans-serif";
-    wrap(ctx, (lang==="zh"?"异议：":"Dissent: ") + lastVerdict.dissent, 60, y+26, 1080, 30, 2);
+function voteBar(){
+  const t = lastVerdict.vote_tally, icon = {support:"🟩",oppose:"🟥",conditional:"🟨"};
+  let bar = "";
+  for(const k of ["support","conditional","oppose"]) bar += (icon[k]).repeat(t[k]||0);
+  return bar;
+}
+function skepticQuote(){
+  const b = (lastVerdict.ballots||[]).find(x=>x.councilor_id==="skeptic") || (lastVerdict.ballots||[])[0];
+  return b ? b.reasoning : lastVerdict.dissent;
+}
+function drawCard(c, W, H, vertical){
+  const ctx = c.getContext("2d");
+  const g = ctx.createLinearGradient(0,0,W,H); g.addColorStop(0,"#0b2447"); g.addColorStop(1,"#123262");
+  ctx.fillStyle = g; ctx.fillRect(0,0,W,H);
+  ctx.fillStyle = "#e8a13d"; ctx.fillRect(0,0,W,10);
+  const M = Math.round(W*0.06), CW = W-2*M, S = vertical ? 1.5 : 1;
+  ctx.fillStyle = "#e8a13d"; ctx.font = `bold ${30*S}px sans-serif`; ctx.fillText("⚖️ QUORUM", M, M+30*S);
+  ctx.fillStyle = "#8fa5c9"; ctx.font = `${20*S}px sans-serif`;
+  ctx.fillText(lang==="zh"?"5 个 AI 审议了这个决定":"5 AIs deliberated this decision", M, M+62*S);
+  // THE SHARER'S DILEMMA is the headline (identity signal)
+  ctx.fillStyle = "#ffffff"; ctx.font = `bold ${42*S}px sans-serif`;
+  let y = wrap(ctx, "「" + lastTitle + "」", M, M+130*S, CW, 54*S, vertical?4:2);
+  // Split vote, big (the comment bait)
+  const t = lastVerdict.vote_tally;
+  const split = ["support","conditional","oppose"].filter(k=>t[k]).map(k=>`${t[k]} ${ {support:lang==="zh"?"支持":"for", conditional:lang==="zh"?"有条件":"conditional", oppose:lang==="zh"?"反对":"against"}[k] }`).join(" · ");
+  ctx.fillStyle = "#e8a13d"; ctx.font = `bold ${34*S}px sans-serif`;
+  ctx.fillText(voteBar() + "  " + split, M, y+40*S); y += 70*S;
+  // Verdict
+  ctx.fillStyle = "#d9e4f5"; ctx.font = `bold ${28*S}px sans-serif`;
+  y = wrap(ctx, (lang==="zh"?"裁定：":"Verdict: ") + lastVerdict.decision, M, y+20*S, CW, 38*S, vertical?4:2);
+  // The Skeptic's sting (the share trigger)
+  ctx.fillStyle = "#f0b95e"; ctx.font = `italic ${24*S}px sans-serif`;
+  y = wrap(ctx, "🔥 " + (lang==="zh"?"唱反调者：":"The Skeptic: ") + "“" + skepticQuote() + "”", M, y+34*S, CW, 32*S, vertical?5:2);
+  if(vertical && lastVerdict.action_plan[0]){
+    ctx.fillStyle = "#c8d5ea"; ctx.font = `${24*S}px sans-serif`;
+    y = wrap(ctx, (lang==="zh"?"第一步：":"First step: ") + lastVerdict.action_plan[0], M, y+40*S, CW, 32*S, 3);
   }
-  ctx.fillStyle = "#5a749e"; ctx.font = "20px sans-serif";
-  ctx.fillText(lang==="zh"?"仅供参考，不构成保证 · github.com/minghui31/quorum-ai":"Illustrative guidance, not a guarantee · github.com/minghui31/quorum-ai", 60, 590);
+  ctx.fillStyle = "#5a749e"; ctx.font = `${18*S}px sans-serif`;
+  const foot = lang==="zh"?"仅供参考，不构成保证 · 让AI议事会审你的难题 → github.com/minghui31/quorum-ai":"Illustrative, not a guarantee · put YOUR dilemma on trial → github.com/minghui31/quorum-ai";
+  wrap(ctx, foot, M, H-M-(vertical?30:10), CW, 24*S, 2);
+}
+function downloadCard(vertical){
+  if(!lastVerdict) return;
+  const c = document.createElement("canvas");
+  c.width = vertical ? 1080 : 1200; c.height = vertical ? 1920 : 630;
+  drawCard(c, c.width, c.height, !!vertical);
   const a = document.createElement("a");
-  a.download = "quorum-verdict.png"; a.href = c.toDataURL("image/png"); a.click();
+  a.download = vertical ? "quorum-verdict-story.png" : "quorum-verdict.png";
+  a.href = c.toDataURL("image/png"); a.click();
+}
+async function copyShare(){
+  if(!lastVerdict) return;
+  const txt = lang==="zh"
+    ? `我让5个AI吵了一架：「${lastTitle}」\n投票 ${voteBar()}\n🔥唱反调的说：“${skepticQuote()}”\n完整裁定 → github.com/minghui31/quorum-ai`
+    : `I put my dilemma on trial before 5 AIs: "${lastTitle}"\nThe vote: ${voteBar()}\n🔥 The Skeptic: "${skepticQuote()}"\nFull verdict → github.com/minghui31/quorum-ai`;
+  try{ await navigator.clipboard.writeText(txt); document.getElementById("sharebtn").textContent = t().copied; }catch(e){ prompt("Copy:", txt); }
 }
 async function joinWaitlist(){
   const em = email.value.trim(); if(!em) return;
