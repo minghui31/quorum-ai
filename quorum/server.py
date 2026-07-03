@@ -28,8 +28,10 @@ from fastapi.responses import FileResponse
 from pydantic import BaseModel, Field
 
 from . import deliberate, load_council
+from .backends import load_env_file
 from .schema import Case
 
+load_env_file()
 app = FastAPI(title="Quorum", version="0.1.0")
 
 _COUNCILS_DIR = Path(__file__).parent / "councils"

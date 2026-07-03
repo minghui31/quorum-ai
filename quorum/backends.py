@@ -14,6 +14,28 @@ import os
 from typing import Protocol
 
 
+def load_env_file(path: str | None = None) -> None:
+    """Load KEY=value lines from a .env file (cwd, then repo root) into os.environ.
+
+    No python-dotenv dependency; existing environment variables always win.
+    """
+    from pathlib import Path
+
+    candidates = [Path(path)] if path else [Path(".env"), Path(__file__).parent.parent / ".env"]
+    for p in candidates:
+        if not p.is_file():
+            continue
+        for line in p.read_text(encoding="utf-8").splitlines():
+            line = line.strip()
+            if not line or line.startswith("#") or "=" not in line:
+                continue
+            k, _, v = line.partition("=")
+            k, v = k.strip(), v.strip().strip('"').strip("'")
+            if v and k not in os.environ:
+                os.environ[k] = v
+        return
+
+
 class Backend(Protocol):
     name: str
 

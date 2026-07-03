@@ -14,7 +14,7 @@ from pathlib import Path
 import yaml
 
 from . import deliberate
-from .backends import auto_backend
+from .backends import auto_backend, load_env_file
 from .i18n import UI
 from .schema import Case
 
@@ -76,6 +76,7 @@ def _load_case(path: str) -> Case:
 
 
 def main(argv: list[str] | None = None) -> int:
+    load_env_file()  # picks up ANTHROPIC_API_KEY etc. from .env — no export needed
     p = argparse.ArgumentParser(prog="quorum", description="A council of AI agents deliberates your decision.")
     sub = p.add_subparsers(dest="cmd", required=True)
 
