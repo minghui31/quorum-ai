@@ -1,0 +1,15 @@
+# fly.io config — `fly launch --copy-config` then `fly secrets set ANTHROPIC_API_KEY=...`
+app = "quorum-ai"
+primary_region = "sjc"
+
+[build]
+
+[http_service]
+  internal_port = 8000
+  force_https = true
+  auto_stop_machines = true
+  auto_start_machines = true
+  min_machines_running = 0
+
+[env]
+  QUORUM_MAX_COUNCILORS = "7"

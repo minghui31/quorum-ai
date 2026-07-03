@@ -27,3 +27,17 @@
 - D6: README polish w/ real GIF + badges; CONTRIBUTING.
 - D7–9: seed 50–100 stars, pre-write Show HN / Reddit / 掘金 / 小红书 posts.
 - D10: coordinated launch (Tue–Thu, US Pacific morning).
+
+## Day 2 (early) — 2026-07-04, overnight block
+- README repositioned (EN+zh): new "Not another multi-model council" section —
+  incentives > weights, vs Perplexity Model Council / council-app crowd.
+- CamelBackend hardened against current camel-ai API (ChatAgent/.step verified
+  from upstream README); ModelFactory usage documented.
+- Day-3 prep: INTEGRATION.md (REST contract, sponsor-data context example,
+  host-app rules: keep disclaimers, consent, rate-limit, stay decoupled).
+- Day-4 prep: render.yaml + fly.toml + DEPLOY.md incl. launch-day traffic notes.
+- Launch kit v1 drafted (private, o1/38_Quorum_Launch_Kit.md): Show HN title+maker
+  comment, X thread, Reddit angles, 小红书/掘金/知乎, CAMEL "Built with" PR plan,
+  investor DM template, star/upvote ethics rules, asset checklist.
+- First real-API run done (Jul 3 night): personas distinct, skeptic sharp; tuned
+  (no markdown, hard word cap, anti-pile-on instruction).

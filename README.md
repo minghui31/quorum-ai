@@ -27,6 +27,21 @@ a structured vote with confidence levels, and a verdict that **preserves the dis
 instead of averaging it away**. Consensus is not verification — when five agents agree
 instantly, that's a red flag, not a conclusion. Quorum is built around that idea.
 
+## Not another multi-model council
+
+"Ask several AIs and merge the answers" already exists — products send one question
+to GPT + Claude + Gemini and synthesize. Quorum is built on a different bet:
+**diversity of *incentives* beats diversity of *weights*.** A recruiter, a hiring
+manager, and a visa officer don't disagree because they're different models — they
+disagree because their *jobs* make them see different risks. Quorum makes that
+structural:
+
+- **Stakeholder personas, not model ensembles** — each councilor argues its role's interests
+- **Independent parallel openings** — no one sees anyone else's answer first (no anchoring)
+- **A designated Skeptic** whose only job is attacking whatever consensus forms
+- **Ballots with confidence, verdicts with dissent** — the minority view survives synthesis
+- **Councils are YAML** — define your own five stakeholders in 20 lines
+
 ## Quickstart (zero API keys needed)
 
 ```bash

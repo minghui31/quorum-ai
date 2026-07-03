@@ -102,7 +102,16 @@ class CamelBackend:
     """Glue to CAMEL-AI (https://github.com/camel-ai/camel).
 
     Uses a fresh ChatAgent per call; Quorum's engine owns the conversation
-    structure, CAMEL owns the agent/model plumbing.
+    structure (the council protocol), CAMEL owns the agent/model plumbing.
+
+    Verified against camel-ai's current quickstart (ChatAgent + .step() →
+    resp.msgs[0].content). Pass any CAMEL model instance, e.g.:
+
+        from camel.models import ModelFactory
+        from camel.types import ModelPlatformType, ModelType
+        model = ModelFactory.create(model_platform=ModelPlatformType.ANTHROPIC,
+                                    model_type=ModelType.CLAUDE_SONNET_5)
+        backend = CamelBackend(model=model)
     """
 
     name = "camel"
@@ -114,13 +123,14 @@ class CamelBackend:
         self._model = model  # a camel model instance or None for its default
 
     def chat(self, system: str, user: str) -> str:
-        agent = (
-            self._ChatAgent(system_message=system, model=self._model)
-            if self._model is not None
-            else self._ChatAgent(system_message=system)
-        )
+        kwargs = {"model": self._model} if self._model is not None else {}
+        try:
+            agent = self._ChatAgent(system_message=system, **kwargs)
+        except TypeError:  # tolerate signature drift across camel versions
+            agent = self._ChatAgent(system, **kwargs)
         resp = agent.step(user)
-        return resp.msgs[0].content
+        msgs = getattr(resp, "msgs", None)
+        return msgs[0].content if msgs else resp.msg.content
 
 
 # --- Mock -------------------------------------------------------------------

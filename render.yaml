@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: quorum
+    runtime: docker
+    plan: free
+    healthCheckPath: /councils
+    envVars:
+      - key: ANTHROPIC_API_KEY
+        sync: false # set in Render dashboard
+      - key: QUORUM_MAX_COUNCILORS
+        value: "7"
