@@ -59,3 +59,13 @@
 - Legal check: disclaimers/attorney pointers intact (i18n.py, careers.yaml), redact()
   wired into engine, no case/CV persistence found. ✅
 - GitHub: 0 stars (seeding is D7–9; organic only).
+
+## Day 3 block — resumed after rest day
+- Release hygiene shipped: CONTRIBUTING.md (councils-as-YAML contribution funnel),
+  CLA.md (draft, counsel review pre-1.0), FAQ.md (incl. the Model Council
+  differentiation answer), RELEASING.md (PyPI steps + pre-launch checklist +
+  good-first-issues list).
+- Summit integration: examples/summit_client.example.jsx — React hook + panel
+  (SSE live view, verdict render w/ mandatory disclaimer) + backend proxy sketch
+  (auth, rate-limit, server-side sponsor-data injection).
+- 小红书 launch essay drafted (private, o1/41) — story-first per research.
