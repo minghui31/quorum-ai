@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<!-- Open in a browser, screenshot the card at exactly 1280×640, upload to
+     GitHub → Settings → Social preview. Design follows CTR research:
+     product-visible, name+tagline top-left, minimal text, phone-legible. -->
+<html><head><meta charset="utf-8"><style>
+  body{margin:0;display:flex;align-items:center;justify-content:center;background:#222;font-family:-apple-system,"Segoe UI","PingFang SC",sans-serif}
+  .card{width:1280px;height:640px;background:linear-gradient(135deg,#0b2447,#123262);position:relative;overflow:hidden}
+  .card::before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at 80% 20%,rgba(232,161,61,.08),transparent 60%)}
+  .top{position:absolute;top:52px;left:64px}
+  .logo{font-size:64px;font-weight:800;color:#fff;letter-spacing:1px}
+  .logo .scale{color:#e8a13d}
+  .tag{font-size:28px;color:#c8d5ea;margin-top:10px;max-width:560px;line-height:1.35}
+  .chat{position:absolute;right:56px;top:48px;width:520px}
+  .msg{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:14px;padding:14px 18px;margin-bottom:14px;backdrop-filter:blur(2px)}
+  .who{font-weight:700;font-size:20px;color:#8fc0ff}
+  .msg p{margin:6px 0 0;font-size:19px;color:#e6edf7;line-height:1.4}
+  .skeptic .who{color:#ff9d6b}
+  .skeptic{border-color:rgba(255,157,107,.4)}
+  .bottom{position:absolute;left:64px;bottom:56px}
+  .votebar{font-size:40px;letter-spacing:4px}
+  .verdict{font-size:26px;color:#f6c37b;font-weight:700;margin-top:10px}
+  .install{position:absolute;right:64px;bottom:56px;background:rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.15);border-radius:10px;padding:12px 20px;font-family:ui-monospace,Menlo,monospace;font-size:22px;color:#9fe8b8}
+</style></head><body>
+<div class="card">
+  <div class="top">
+    <div class="logo"><span class="scale">⚖️</span> QUORUM</div>
+    <div class="tag">Five AI agents with conflicting incentives deliberate your decision — dissent included.</div>
+  </div>
+  <div class="chat">
+    <div class="msg"><div class="who">🎯 Recruiter</div><p>The market gives this résumé six seconds. Take the offer.</p></div>
+    <div class="msg skeptic"><div class="who">🔥 The Skeptic</div><p>Everyone's assuming the "safe" path is safe. It's a lottery with a logo on it.</p></div>
+    <div class="msg"><div class="who">🛂 Visa Analyst</div><p>Evidence, not effort, decides this. Verify with an attorney.</p></div>
+  </div>
+  <div class="bottom">
+    <div class="votebar">🟩🟩🟩🟨🟥</div>
+    <div class="verdict">Verdict: proceed — dissent preserved (3–1–1)</div>
+  </div>
+  <div class="install">pip install quorum-ai</div>
+</div>
+</body></html>
