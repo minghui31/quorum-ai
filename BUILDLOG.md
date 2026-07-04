@@ -46,3 +46,16 @@
   CLI `quorum simulate --runs N` with distribution bars, POST /simulate,
   salted-backend decorrelation, QUORUM_MAX_RUNS cost cap, test added.
   README (EN+zh): "Convene one council — or fifty" section.
+
+## Day 2 check-in — 2026-07-04
+- Done since Day 1: README repositioning (incentives > ensembles), CAMEL glue hardened,
+  persona tuning from first real run, Monte-Carlo deliberation (`quorum simulate`),
+  verdict card v2 (share loop), INTEGRATION.md + deploy configs (D3/D4 prep pulled forward).
+- ⚠️ LICENSE still plain GPL-3.0 — the GitHub "Update LICENSE" edit did NOT insert
+  Affero text ("GNU GENERAL PUBLIC LICENSE", not "GNU AFFERO..."). README claims AGPL;
+  mismatch is a credibility bug. Fix + push.
+- ⚠️ 2 commits unpushed (Monte-Carlo, verdict card v2) — origin is stale.
+- ⚠️ Still owed: vote+verdict paste from a real `quorum demo --serious` (ballot-parse check).
+- Legal check: disclaimers/attorney pointers intact (i18n.py, careers.yaml), redact()
+  wired into engine, no case/CV persistence found. ✅
+- GitHub: 0 stars (seeding is D7–9; organic only).
