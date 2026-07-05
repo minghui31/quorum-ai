@@ -69,3 +69,14 @@
   (SSE live view, verdict render w/ mandatory disclaimer) + backend proxy sketch
   (auth, rate-limit, server-side sponsor-data injection).
 - 小红书 launch essay drafted (private, o1/41) — story-first per research.
+
+## Day 3-4 CLOSED — 2026-07-04 evening
+- L&E Clinic intake submitted (free startup legal; screening interview ~1-2 wks).
+- LICENSE fixed on GitHub via browser: now true AGPL-3.0 (commit 6390deb).
+- HOSTED DEMO LIVE: https://quorum-brkj.onrender.com (Render Blueprint from
+  render.yaml, free tier, mock mode until ANTHROPIC_API_KEY set in dashboard).
+- Live E2E verified in production: 红楼梦 case, zh auto-detect, SSE stream, all
+  5 phases, split vote 3-1-1 w/ dissent, disclaimers, card buttons, waitlist+consent.
+- Remaining to make hosted demo REAL: user pastes ANTHROPIC_API_KEY in Render
+  Environment + sets Anthropic console spend cap. Auto-deploy: connect GitHub
+  in Render later (currently public-repo mode = manual sync).
