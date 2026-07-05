@@ -61,14 +61,19 @@ class AnthropicBackend:
             },
             json={
                 "model": self.model,
-                "max_tokens": 1024,
+                "max_tokens": 2000,
                 "system": system,
                 "messages": [{"role": "user", "content": user}],
             },
             timeout=120,
         )
         r.raise_for_status()
-        return r.json()["content"][0]["text"]
+        data = r.json()
+        # Models may emit thinking/tool blocks before text — join text blocks only.
+        text = "".join(b.get("text", "") for b in data.get("content", []) if b.get("type") == "text")
+        if not text:
+            raise RuntimeError(f"No text content in model response (stop_reason={data.get('stop_reason')})")
+        return text
 
 
 class OpenAICompatBackend:
