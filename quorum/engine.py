@@ -38,6 +38,49 @@ def _extract_json(text: str) -> dict:
         return {}
 
 
+# Models (esp. in Chinese) often emit unescaped inner double-quotes that break
+# strict JSON. These field-level fallbacks recover the payload anyway.
+_RX_STANCE = re.compile(r'"stance"\s*:\s*"(support|oppose|conditional)"', re.I)
+_RX_CONF = re.compile(r'"confidence"\s*:\s*([0-9.]+)')
+_RX_REASON = re.compile(r'"reasoning"\s*:\s*"(.*?)"\s*\}', re.S)
+_RX_DECISION = re.compile(r'"decision"\s*:\s*"(.*?)"\s*,\s*"summary"', re.S)
+_RX_SUMMARY = re.compile(r'"summary"\s*:\s*"(.*?)"\s*,\s*"dissent"', re.S)
+_RX_DISSENT = re.compile(r'"dissent"\s*:\s*"(.*?)"\s*,\s*"action_plan"', re.S)
+_RX_PLAN = re.compile(r'"action_plan"\s*:\s*\[(.*?)\]', re.S)
+
+
+def _parse_ballot(raw: str) -> dict:
+    d = _extract_json(raw)
+    if d.get("stance"):
+        return d
+    out = {}
+    m = _RX_STANCE.search(raw)
+    out["stance"] = m.group(1).lower() if m else "conditional"
+    m = _RX_CONF.search(raw)
+    out["confidence"] = float(m.group(1)) if m else 0.5
+    m = _RX_REASON.search(raw)
+    out["reasoning"] = m.group(1).strip() if m else raw
+    return out
+
+
+def _parse_verdict(raw: str) -> dict:
+    d = _extract_json(raw)
+    if d.get("decision"):
+        return d
+    out = {}
+    for key, rx in (("decision", _RX_DECISION), ("summary", _RX_SUMMARY), ("dissent", _RX_DISSENT)):
+        m = rx.search(raw)
+        if m:
+            out[key] = m.group(1).strip()
+    m = _RX_PLAN.search(raw)
+    if m:
+        items = re.split(r'"\s*,\s*"', m.group(1).strip().strip('"'))
+        out["action_plan"] = [i.strip().strip('"') for i in items if i.strip()]
+    if "summary" not in out:
+        out["summary"] = raw
+    return out
+
+
 class Deliberation:
     def __init__(
         self,
@@ -128,9 +171,10 @@ class Deliberation:
                 self._system(c.persona, lang),
                 f"{brief}\n\nFull deliberation so far:\n{transcript}\n\nChallenge: {challenge}\n\n"
                 '[BALLOT] Cast your vote as JSON only: {"stance": "support|oppose|conditional", '
-                '"confidence": 0.0-1.0, "reasoning": "one sentence"}',
+                '"confidence": 0.0-1.0, "reasoning": "one sentence"}. '
+                "Never use double-quote characters inside string values — use 「」 or ' instead.",
             )
-            d = _extract_json(raw)
+            d = _parse_ballot(raw)
             ballot = Ballot(
                 councilor_id=c.id,
                 stance=str(d.get("stance", "conditional")).lower(),
@@ -152,9 +196,10 @@ class Deliberation:
             f"{brief}\n\nOPENINGS:\n{transcript}\n\nCHALLENGE:\n{challenge}\n\nBALLOTS:\n{ballots_txt}\n\n"
             "[SYNTHESIZE] Produce the council's verdict as JSON only: "
             '{"decision": "...", "summary": "...", "dissent": "the strongest minority view, verbatim spirit", '
-            '"action_plan": ["3-5 concrete next steps"]}',
+            '"action_plan": ["3-5 concrete next steps"]}. '
+            "Never use double-quote characters inside string values — use 「」 or ' instead.",
         )
-        d = _extract_json(raw)
+        d = _parse_verdict(raw)
         disclaimer = DISCLAIMER[lang]
         if _VISA_HINT.search(case.title + " " + body):
             disclaimer += "\n" + VISA_EXTRA[lang]

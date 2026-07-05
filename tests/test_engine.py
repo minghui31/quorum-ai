@@ -53,6 +53,26 @@ def test_all_builtin_councils_load():
         assert c.councilors, name
 
 
+def test_broken_json_fallback_parsing():
+    from quorum.engine import _parse_ballot, _parse_verdict
+
+    # Unescaped inner double-quotes (common in Chinese output) break json.loads
+    bad_ballot = '{"stance": "oppose", "confidence": 0.72, "reasoning": "宝玉的"情不情"却天然博爱不专一，二人无缘。"}'
+    b = _parse_ballot(bad_ballot)
+    assert b["stance"] == "oppose"
+    assert b["confidence"] == 0.72
+    assert "情不情" in b["reasoning"]
+    assert "{" not in b["reasoning"]
+
+    bad_verdict = ('{"decision": "宝黛无缘是"文本必然"", "summary": "多数认为"方向对、笔力散"。", '
+                   '"dissent": "skeptic坚持"证据链"未经检验。", "action_plan": ["比对"脂批"抄本", "梳理判词"]}')
+    v = _parse_verdict(bad_verdict)
+    assert "文本必然" in v["decision"]
+    assert "方向对" in v["summary"]
+    assert "证据链" in v["dissent"]
+    assert len(v["action_plan"]) == 2
+
+
 def test_monte_carlo_ensemble():
     from quorum.montecarlo import simulate
 

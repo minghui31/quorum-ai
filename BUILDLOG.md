@@ -93,3 +93,12 @@
 - BLOCKED on user: git push (4 commits), ANTHROPIC_API_KEY into Render env
   (→ real-inference GIF + promo screenshots + live ballot verification).
 - TODO: 中文 video version; GIF; social-preview upload; README GIF embed (D6).
+
+## Day 5 close-out — live verification round
+- 中文 60s video produced (same scenes, Hana narration, zh subtitles).
+- Live real-Claude runs verified: personas exceptional (Nutritionist caught a
+  counting detail; 红楼梦 council cites 脂批/判词/清代出版环境 — 小红书 gold).
+- Bug #1 fixed: thinking blocks crashed verdict synthesis (robust text-block extraction).
+- Bug #2 fixed: unescaped inner quotes in zh JSON broke ballot/verdict parsing →
+  field-level regex fallbacks + prompt rule (use 「」 inside strings) + test.
+- Both bugs caught BEFORE launch by production verification. Worth everything.
