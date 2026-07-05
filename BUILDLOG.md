@@ -117,4 +117,34 @@
   fixed with windowWidth + block layout, all re-verified visually.)
 - README (EN+zh): GIF embedded + "Try it live" link.
 - User TODO: move quorum-demo.gif + 4 PNGs from Downloads → quorum/assets/,
-  upload social preview PNG in GitHub Settings, then commit+push.
+  upload social preview PNG in GitHub Settings, then commit+push. ✅ all done same night.
+
+## Virality detail pass — 2026-07-04 late (deployed live, commit bd4aa9d)
+- Web demo had ZERO og/twitter meta → added full set (og:image = social preview
+  PNG, verified 200 image/png live). Links now unfurl as cards on X/Discord/WeChat.
+- Demo→star loop was broken (no repo link in UI) → ★ GitHub header button +
+  post-verdict ⭐ star CTA (EN/zh) at the moment of peak delight.
+- Favicon (⚖️ svg data-URI). pyproject: [project.urls], 12 keywords, classifiers.
+- GitHub repo: website field + 12 topics were EMPTY → filled via extension.
+- Social preview uploaded to GitHub Settings via extension (file_upload).
+- Push hiccup: 8.25MiB pack hit http.postBuffer default → fixed w/ 157286400.
+- Account plan: user creating HN/Reddit/X/小红书/掘金/PyPI accounts now (aging
+  matters most for Reddit karma filters; HN + 小红书 nearly age-blind).
+
+## Day 3 check-in — 2026-07-05 (calendar Day 3; progress ≈ playbook Day 6)
+- Since last check-in: demo GIF (live real-Claude run) in README, promo cards ×4
+  exported, virality pass (og/twitter tags, star CTAs, favicon, topics, social
+  preview) — all pushed; GitHub verified current at bd4aa9d (README GIF + Try-it-live
+  + custom og:image all live; earlier "5 commits" page was CDN cache).
+- Closed: AGPL LICENSE ✅ (Affero text verified), git push ✅, Render real-key runs ✅
+  (ballot/verdict parse verified in prod — the owed --serious verification is
+  effectively done via live runs + parser tests).
+- ⚠️ Stars: 0 (0 forks/watchers). Seeding window (D7–9) can start EARLY since build
+  is ahead: genuine outreach only (personal network, CAMEL community, "Built with"
+  PR). Never purchased/fake stars.
+- 🎯 Today: (1) start organic star/outreach runway + CAMEL "Built with" PR;
+  (2) PyPI release per RELEASING.md so `pip install quorum-ai` works before launch;
+  (3) finalize launch posts from kit v2 + pick launch day (Tue Jul 7–Thu Jul 9
+  window is now feasible ahead of the Jul 13 deadline — decide).
+- Legal: disclaimers + attorney pointers intact (i18n.py, careers.yaml), redact()
+  wired pre-LLM, no case/CV persistence. ✅ CLA still needs counsel review pre-1.0.
