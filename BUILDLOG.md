@@ -80,3 +80,16 @@
 - Remaining to make hosted demo REAL: user pastes ANTHROPIC_API_KEY in Render
   Environment + sets Anthropic console spend cap. Auto-deploy: connect GitHub
   in Render later (currently public-repo mode = manual sync).
+
+## Day 5 — asset production
+- 60s launch video v1 (EN) PRODUCED via Higgsfield explainer pipeline:
+  6 isometric-flat-vector scenes (gemini_omni) + Sterling narration (seed_audio)
+  + subtitles, assembled server-side. 2 failed blocks re-rendered successfully.
+- Platform promo cards built (assets/promo_cards.html): YouTube 1280x720,
+  小红书 1080x1440, X 1200x675 — per image-CTR research.
+- Launch kit v2: master posting schedule (8:30am CDT = HN window + 小红书 golden
+  hour simultaneously), X link-in-reply rule, Show HN survival tactics.
+- Anthropic credits: $19.93 prepaid, auto-reload OFF (= hard spend cap ✅).
+- BLOCKED on user: git push (4 commits), ANTHROPIC_API_KEY into Render env
+  (→ real-inference GIF + promo screenshots + live ballot verification).
+- TODO: 中文 video version; GIF; social-preview upload; README GIF embed (D6).
