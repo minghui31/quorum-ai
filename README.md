@@ -13,7 +13,11 @@ opening positions → cross-examination → a real vote → a verdict with disse
 
 **English** · [简体中文](README.zh-CN.md)
 
-<!-- 🎬 demo.gif goes here — the council arguing live -->
+![Quorum demo — five AI agents deliberate a real career/visa decision live, ending in a verdict with dissent preserved](assets/quorum-demo.gif)
+
+*A real deliberation on the hosted demo: five personas argue a job-offer-vs-startup case, the Skeptic finds the blind spot everyone missed (IP/moonlighting clauses), and the verdict preserves the dissent.*
+
+🔴 **[Try it live →](https://quorum-brkj.onrender.com)**
 
 </div>
 

@@ -7,3 +7,4 @@ build/
 waitlist.txt
 .venv/
 .pytest_cache/
+.DS_Store

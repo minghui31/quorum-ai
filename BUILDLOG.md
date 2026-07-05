@@ -102,3 +102,19 @@
 - Bug #2 fixed: unescaped inner quotes in zh JSON broke ballot/verdict parsing →
   field-level regex fallbacks + prompt rule (use 「」 inside strings) + test.
 - Both bugs caught BEFORE launch by production verification. Worth everything.
+
+## Day 5 CLOSED / Day 6 started — 2026-07-05 early
+- Demo GIF recorded against LIVE real-Claude deliberation (careers council,
+  startup-vs-safe-job case): 17 frames, openings → cross-exam → vote → verdict.
+  Bonus: the run itself verified the parser fix in production (verdict card
+  rendered perfectly, conditional×5, dissent + 5-step plan intact).
+- The recorded deliberation was launch-gold: council unanimously converged,
+  then the Skeptic surfaced the blind spot (IP/moonlighting clauses in the
+  sponsored offer) — exactly the anti-groupthink pitch, on camera.
+- Promo cards exported pixel-exact via in-page html2canvas: YouTube 1280×720,
+  小红书 1080×1440, X 1200×675, GitHub social preview 1280×640.
+  (First social-preview capture came out 857px/broken — viewport clipping;
+  fixed with windowWidth + block layout, all re-verified visually.)
+- README (EN+zh): GIF embedded + "Try it live" link.
+- User TODO: move quorum-demo.gif + 4 PNGs from Downloads → quorum/assets/,
+  upload social preview PNG in GitHub Settings, then commit+push.

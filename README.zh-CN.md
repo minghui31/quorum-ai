@@ -13,7 +13,11 @@
 
 [English](README.md) · **简体中文**
 
-<!-- 🎬 demo.gif — 议事会现场辩论 -->
+![Quorum 演示 — 五个 AI 议员现场辩论一个真实的职业/签证决定，最终给出保留异议的裁决](assets/quorum-demo.gif)
+
+*托管演示上的真实辩论：五个角色围绕「大厂 offer vs 创业」争论，唱反调者找到了所有人都忽略的盲点（IP 与兼职条款），裁决完整保留了异议。*
+
+🔴 **[在线体验 →](https://quorum-brkj.onrender.com)**
 
 </div>
 
