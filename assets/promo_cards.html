@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<!-- Platform-exact promo cards. Screenshot each card at its native size.
+     #yt = YouTube thumbnail 1280x720 · #xhs = 小红书 cover 1080x1440 (3:4) · #x = X card 1200x675 -->
+<html><head><meta charset="utf-8"><style>
+  body{margin:0;background:#333;font-family:-apple-system,"Segoe UI","PingFang SC","Noto Sans SC",sans-serif}
+  .card{position:relative;overflow:hidden;background:linear-gradient(135deg,#0b2447,#123262);margin:20px auto}
+  .amber{color:#e8a13d}.white{color:#fff}
+  /* ---------- YouTube 1280x720 ---------- */
+  #yt{width:1280px;height:720px}
+  #yt .vs{display:flex;justify-content:space-between;align-items:center;padding:70px 80px 0}
+  #yt .side{font-size:64px;font-weight:900;color:#fff;background:rgba(255,255,255,.08);border:3px solid rgba(255,255,255,.25);border-radius:24px;padding:28px 44px}
+  #yt .side.red{border-color:rgba(255,120,90,.55);color:#ffb49d}
+  #yt .gavel{font-size:120px}
+  #yt .hook{font-size:88px;font-weight:900;color:#fff;text-align:center;margin-top:48px;line-height:1.08;text-shadow:0 4px 24px rgba(0,0,0,.4)}
+  #yt .hook .amber{color:#f6c37b}
+  #yt .votebar{text-align:center;font-size:64px;letter-spacing:10px;margin-top:36px}
+  #yt .brand{position:absolute;bottom:28px;right:40px;font-size:30px;font-weight:800;color:#8fa5c9}
+  /* ---------- 小红书 1080x1440 ---------- */
+  #xhs{width:1080px;height:1440px}
+  #xhs .tag{margin:70px 70px 0;font-size:40px;color:#f6c37b;font-weight:700}
+  #xhs .hook{margin:24px 70px 0;font-size:96px;font-weight:900;color:#fff;line-height:1.22}
+  #xhs .sub{margin:30px 70px 0;font-size:52px;color:#c8d5ea;font-weight:700}
+  #xhs .chat{margin:52px 70px 0;display:flex;flex-direction:column;gap:22px}
+  #xhs .msg{background:rgba(255,255,255,.96);border-radius:20px;padding:24px 30px;font-size:34px;color:#12233f;box-shadow:0 6px 24px rgba(0,0,0,.25)}
+  #xhs .msg b{color:#1c4fa0}
+  #xhs .msg.hot{background:#fff4e3}
+  #xhs .msg.hot b{color:#c2611b}
+  #xhs .verdict{margin:48px 70px 0;background:rgba(232,161,61,.16);border:3px solid #e8a13d;border-radius:20px;padding:28px 34px;font-size:44px;color:#f6c37b;font-weight:900}
+  #xhs .votebar{margin:34px 70px 0;font-size:60px;letter-spacing:8px}
+  #xhs .brand{position:absolute;bottom:40px;left:70px;font-size:34px;color:#8fa5c9;font-weight:700}
+  /* ---------- X 1200x675 ---------- */
+  #x{width:1200px;height:675px}
+  #x .hook{margin:80px 70px 0;font-size:68px;font-weight:900;color:#fff;line-height:1.15;max-width:760px}
+  #x .hook .amber{color:#f6c37b}
+  #x .sub{margin:30px 70px 0;font-size:34px;color:#c8d5ea;max-width:700px;line-height:1.4}
+  #x .votebar{margin:44px 70px 0;font-size:56px;letter-spacing:8px}
+  #x .council{position:absolute;right:60px;top:70px;display:flex;flex-direction:column;gap:16px}
+  #x .agent{width:96px;height:96px;border-radius:50%;background:rgba(255,255,255,.1);border:3px solid rgba(255,255,255,.3);display:flex;align-items:center;justify-content:center;font-size:52px}
+  #x .agent.hot{border-color:#ff9d6b;background:rgba(255,157,107,.15)}
+  #x .brand{position:absolute;bottom:30px;right:44px;font-size:26px;font-weight:800;color:#8fa5c9}
+</style></head><body>
+
+<div class="card" id="yt">
+  <div class="vs"><div class="side">SAFE JOB</div><div class="gavel">⚖️</div><div class="side red">MY STARTUP</div></div>
+  <div class="hook">5 AIs <span class="amber">JUDGED</span> MY LIFE</div>
+  <div class="votebar">🟩🟩🟩🟨🟥</div>
+  <div class="brand">⚖️ QUORUM · open source</div>
+</div>
+
+<div class="card" id="xhs">
+  <div class="tag">#留学生 #签证 #AI</div>
+  <div class="hook">该不该为了<br>绿卡放弃<br>创业梦？</div>
+  <div class="sub">我让5个AI吵了一架来审判我</div>
+  <div class="chat">
+    <div class="msg"><b>🎯 招聘官：</b>市场只给简历六秒钟。</div>
+    <div class="msg hot"><b>🔥 唱反调者：</b>"安全"的那条路，其实是贴着大厂logo的抽签。</div>
+    <div class="msg"><b>🛂 签证分析员：</b>证据说话，不是努力说话。</div>
+  </div>
+  <div class="verdict">⚖️ 裁定：3 支持 · 1 有条件 · 1 反对</div>
+  <div class="votebar">🟩🟩🟩🟨🟥</div>
+  <div class="brand">⚖️ QUORUM · 开源 · 评论区领链接</div>
+</div>
+
+<div class="card" id="x">
+  <div class="hook">Ask one AI, get an answer.<br>Ask <span class="amber">five with conflicting incentives</span> — get the truth.</div>
+  <div class="sub">Recruiter vs hiring manager vs visa analyst vs mentor vs the Skeptic. Open-source. Dissent preserved.</div>
+  <div class="votebar">🟩🟩🟩🟨🟥 <span style="font-size:34px;color:#c8d5ea">3–1–1, dissent on record</span></div>
+  <div class="council">
+    <div class="agent">🎯</div><div class="agent">🧑‍💼</div><div class="agent">🛂</div><div class="agent">🌱</div><div class="agent hot">🔥</div>
+  </div>
+  <div class="brand">⚖️ QUORUM</div>
+</div>
+
+</body></html>

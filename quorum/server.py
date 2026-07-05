@@ -34,6 +34,12 @@ from .schema import Case
 load_env_file()
 app = FastAPI(title="Quorum", version="0.1.0")
 
+_ASSETS_DIR = Path(__file__).parent.parent / "assets"
+if _ASSETS_DIR.is_dir():
+    from fastapi.staticfiles import StaticFiles
+
+    app.mount("/assets", StaticFiles(directory=str(_ASSETS_DIR)), name="assets")
+
 _COUNCILS_DIR = Path(__file__).parent / "councils"
 _WEB_INDEX = Path(__file__).parent.parent / "web" / "index.html"
 _DATA_DIR = Path(os.environ.get("QUORUM_DATA_DIR", "."))
