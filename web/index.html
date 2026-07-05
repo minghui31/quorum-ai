@@ -4,6 +4,20 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Quorum — a council of AI agents deliberates your decision</title>
+<meta name="description" content="Five AI agents with conflicting incentives argue your hardest decision in the open — cross-examination, a real vote, and a verdict with dissent preserved. Open source.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚖️</text></svg>">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Quorum">
+<meta property="og:title" content="Quorum — 5 AI agents put your decision on trial">
+<meta property="og:description" content="A recruiter, a hiring manager, a visa analyst, a mentor, and a professional skeptic argue your case in the open — then vote. Dissent included. Open source.">
+<meta property="og:url" content="https://quorum-brkj.onrender.com/">
+<meta property="og:image" content="https://quorum-brkj.onrender.com/assets/quorum_social_preview_1280x640.png">
+<meta property="og:image:width" content="1280">
+<meta property="og:image:height" content="640">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Quorum — 5 AI agents put your decision on trial">
+<meta name="twitter:description" content="Conflicting incentives, open cross-examination, a real vote, dissent preserved. Open source.">
+<meta name="twitter:image" content="https://quorum-brkj.onrender.com/assets/quorum_social_preview_1280x640.png">
 <style>
   :root{
     --navy:#0b2447; --navy2:#123262; --ink:#0f1c33; --paper:#f7f9fc;
@@ -16,6 +30,10 @@
   header h1 .gavel{color:var(--amber)}
   header p{margin:.5rem auto 0;max-width:620px;color:#c8d5ea;font-size:1.02rem}
   .langbtn{position:absolute;top:1rem;right:1rem;background:rgba(255,255,255,.12);color:#fff;border:1px solid rgba(255,255,255,.3);border-radius:20px;padding:.35rem .9rem;cursor:pointer;font-size:.9rem}
+  .ghbtn{position:absolute;top:1rem;left:1rem;background:rgba(255,255,255,.12);color:#fff;border:1px solid rgba(255,255,255,.3);border-radius:20px;padding:.35rem .9rem;font-size:.9rem;text-decoration:none;display:inline-flex;align-items:center;gap:.35rem}
+  .ghbtn:hover,.langbtn:hover{background:rgba(255,255,255,.22)}
+  .starcta{display:inline-block;margin-top:.9rem;background:var(--amber);color:#12233f;border-radius:10px;padding:.6rem 1rem;font-weight:800;text-decoration:none;font-size:.95rem}
+  .starcta:hover{background:var(--amber2)}
   .stats{font-size:.85rem;color:var(--amber2);margin-top:.6rem}
   main{max-width:820px;margin:0 auto;padding:1.5rem}
   .card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:1.2rem;margin-bottom:1.2rem;box-shadow:0 2px 10px rgba(11,36,71,.05)}
@@ -52,6 +70,7 @@
 </head>
 <body>
 <header style="position:relative">
+  <a class="ghbtn" href="https://github.com/minghui31/quorum-ai" target="_blank" rel="noopener" id="ghbtn">★ GitHub</a>
   <button class="langbtn" id="langbtn" onclick="toggleLang()">中文</button>
   <h1><span class="gavel">⚖️</span> QUORUM</h1>
   <p id="tagline"></p>
@@ -91,6 +110,7 @@ const I18N = {
     seeds:"Try one:", wait:"Get the hosted version + new councils first:", wlbtn:"Join waitlist", wldone:"You're in ✓",
     consent:"By joining, you consent to us storing your email solely to contact you about Quorum. Removal anytime on request — never shared, never used for training.",
     card:"⬇️ Verdict card", card916:"⬇️ Story card (9:16)", copyShare:"📋 Copy share text", copied:"Copied ✓",
+    starcta:"⭐ Useful? Star it on GitHub",
     stats:n=>`${n} councils convened`,
     phases:{openings:"Opening positions",cross_exam:"Cross-examination",vote:"The vote",verdict:"Verdict"},
     dissent:"Dissenting view", plan:"Action plan", verdictT:"⚖️ Verdict",
@@ -104,6 +124,7 @@ const I18N = {
     seeds:"试试这些：", wait:"抢先体验托管版和新议事会：", wlbtn:"加入等候名单", wldone:"已加入 ✓",
     consent:"加入即表示同意我们存储你的邮箱，仅用于 Quorum 相关通知。可随时要求删除——绝不共享，绝不用于训练。",
     card:"⬇️ 裁定卡", card916:"⬇️ 小红书卡片 (9:16)", copyShare:"📋 复制分享文案", copied:"已复制 ✓",
+    starcta:"⭐ 觉得有用？去 GitHub 点个星",
     stats:n=>`已召开 ${n} 次议事会`,
     phases:{openings:"各方陈述",cross_exam:"交叉质询",vote:"投票",verdict:"最终裁定"},
     dissent:"异议观点", plan:"行动计划", verdictT:"⚖️ 最终裁定",
@@ -201,6 +222,7 @@ function convene(){
       <button class="cardbtn" onclick="downloadCard(false)">${t().card}</button>
       <button class="cardbtn" onclick="downloadCard(true)">${t().card916}</button>
       <button class="cardbtn" id="sharebtn" onclick="copyShare()">${t().copyShare}</button>
+      <div><a class="starcta" href="https://github.com/minghui31/quorum-ai" target="_blank" rel="noopener">${t().starcta}</a></div>
     </div>`;
     done();
   });
