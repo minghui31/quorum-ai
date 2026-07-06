@@ -164,3 +164,21 @@
   window is now feasible ahead of the Jul 13 deadline — decide).
 - Legal: disclaimers + attorney pointers intact (i18n.py, careers.yaml), redact()
   wired pre-LLM, no case/CV persistence. ✅ CLA still needs counsel review pre-1.0.
+
+## Day 4 check-in — 2026-07-06 (calendar Day 4; progress ≈ playbook D7)
+- Since last check-in: ENSEMBLE MODE shipped to web demo (7 commits, pushed):
+  /simulate/stream SSE + live distribution bars, flip rate, recurring dissent,
+  majority verdict, share text (EN/zh); Haiku ensembles ≈ $0.07/click (measured),
+  QUORUM_WEB_MAX_RUNS=5 server cap; counter persisted + QUORUM_COUNT_FLOOR;
+  zh browser auto-detect; waitlist teases 100-council deep reports (no pricing).
+- ⚠️ 1 commit unpushed (d727652 buildlog) — push with today's work.
+- ⚠️ Not started: PyPI publish + v0.1.0 tag; CAMEL "Built with" PR; founder
+  cheat sheet + hostile-commenter drill; platform bios / Reddit karma warm-up.
+- 🎯 Today: (1) PyPI release + v0.1.0 tag per RELEASING.md (`pip install
+  quorum-ai` must work before any outreach); (2) founder cheat sheet EN+zh +
+  drill ×1 (biggest launch risk is the human, not the repo); (3) start organic
+  runway: CAMEL "Built with" PR + Discord showcase + daily Reddit warm-up.
+- GitHub: 0 stars / 0 forks / 0 watchers. Launch Tue Jul 14 8:30am CDT locked.
+- Legal: disclaimers + attorney pointers intact (i18n.py ×4, web UI), redact()
+  wired pre-LLM (engine.py:123), no case/CV persistence (server docstring
+  confirms in-memory only). ✅ CLA counsel review still owed pre-1.0.
