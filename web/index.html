@@ -45,6 +45,22 @@
   .seed:hover{background:#e2ebf7}
   .go{margin-top:1rem;width:100%;background:var(--navy);color:#fff;border:none;border-radius:10px;padding:.85rem;font-size:1.05rem;font-weight:700;cursor:pointer}
   .go:hover{background:var(--navy2)} .go:disabled{opacity:.55;cursor:wait}
+  .ensrow{display:flex;gap:.5rem;margin-top:.6rem}
+  .ensrow select{flex:0 0 5.2rem;width:auto}
+  .ensbtn{margin-top:0;flex:1;background:#fff;color:var(--navy);border:2px solid var(--navy)}
+  .ensbtn:hover{background:#eef3fa}
+  .ensnote{font-size:.75rem;color:var(--dim);margin-top:.45rem;line-height:1.45}
+  .dist{background:#fff;border:1px solid var(--line);border-radius:14px;padding:1.2rem;margin:1.2rem 0;box-shadow:0 2px 10px rgba(11,36,71,.05)}
+  .dist h2{margin:.1rem 0 .9rem;color:var(--navy)}
+  .drow{display:flex;align-items:center;gap:.6rem;margin:.45rem 0}
+  .dlabel{flex:0 0 7.5rem;font-weight:700;font-size:.9rem;text-align:right}
+  .dtrack{flex:1;background:#eef3fa;border-radius:8px;height:1.5rem;overflow:hidden}
+  .dfill{height:100%;border-radius:8px;transition:width .5s ease;min-width:2px}
+  .dfill.support{background:var(--green)} .dfill.oppose{background:var(--red)}
+  .dfill.conditional{background:var(--amber)} .dfill.split{background:#9aa7bd}
+  .dpct{flex:0 0 4.5rem;font-weight:800;font-size:.95rem}
+  .dmeta{font-size:.85rem;color:var(--dim);margin-top:.7rem}
+  .dprog{font-size:.9rem;color:var(--navy);font-weight:700;margin-bottom:.6rem}
   .phase{margin:1.3rem 0 .5rem;font-weight:800;color:var(--navy);font-size:.85rem;letter-spacing:.12em;text-transform:uppercase;border-bottom:2px solid var(--amber);padding-bottom:.25rem}
   .msg{display:flex;gap:.7rem;margin:.7rem 0;animation:pop .3s ease}
   @keyframes pop{from{opacity:0;transform:translateY(6px)}to{opacity:1}}
@@ -86,8 +102,17 @@
     <textarea id="body"></textarea>
     <div class="seeds" id="seeds"></div>
     <button class="go" id="go" onclick="convene()"></button>
+    <div class="ensrow">
+      <select id="runs" onchange="renderEns()">
+        <option value="3">×3</option>
+        <option value="5" selected>×5</option>
+      </select>
+      <button class="go ensbtn" id="ensgo" onclick="conveneMany()"></button>
+    </div>
+    <div id="ensnote" class="ensnote"></div>
   </div>
   <div id="feed"></div>
+  <div id="dist"></div>
   <div id="verdict"></div>
   <div class="card">
     <label id="l-wait"></label>
@@ -111,6 +136,12 @@ const I18N = {
     consent:"By joining, you consent to us storing your email solely to contact you about Quorum. Removal anytime on request — never shared, never used for training.",
     card:"⬇️ Verdict card", card916:"⬇️ Story card (9:16)", copyShare:"📋 Copy share text", copied:"Copied ✓",
     starcta:"⭐ Useful? Star it on GitHub",
+    ensGo:n=>`🗳️ Convene ${n} councils — see the split`,
+    ensRunning:(i,n)=>`${i}/${n} councils have voted…`,
+    ensNote:"One council gives an answer. Several show how contested it is. Hosted demo caps at 5 — pip install quorum-ai to run 100.",
+    distT:"📊 Verdict distribution", flip:"flip rate", avgConf:"avg confidence",
+    recDissent:"Recurring dissent", ensShare:"📋 Copy share text",
+    stanceNames:{support:"support",oppose:"oppose",conditional:"conditional",split:"split"},
     stats:n=>`${n} councils convened`,
     phases:{openings:"Opening positions",cross_exam:"Cross-examination",vote:"The vote",verdict:"Verdict"},
     dissent:"Dissenting view", plan:"Action plan", verdictT:"⚖️ Verdict",
@@ -125,6 +156,12 @@ const I18N = {
     consent:"加入即表示同意我们存储你的邮箱，仅用于 Quorum 相关通知。可随时要求删除——绝不共享，绝不用于训练。",
     card:"⬇️ 裁定卡", card916:"⬇️ 小红书卡片 (9:16)", copyShare:"📋 复制分享文案", copied:"已复制 ✓",
     starcta:"⭐ 觉得有用？去 GitHub 点个星",
+    ensGo:n=>`🗳️ 召集 ${n} 个议事会 — 看观点分布`,
+    ensRunning:(i,n)=>`${i}/${n} 个议事会已投票…`,
+    ensNote:"一个议事会给你答案，多个议事会告诉你这个答案有多大争议。托管演示上限 5 个 — pip install quorum-ai 可跑 100 个。",
+    distT:"📊 裁定分布", flip:"翻转率", avgConf:"平均信心",
+    recDissent:"反复出现的异议", ensShare:"📋 复制分享文案",
+    stanceNames:{support:"支持",oppose:"反对",conditional:"有条件",split:"分裂"},
     stats:n=>`已召开 ${n} 次议事会`,
     phases:{openings:"各方陈述",cross_exam:"交叉质询",vote:"投票",verdict:"最终裁定"},
     dissent:"异议观点", plan:"行动计划", verdictT:"⚖️ 最终裁定",
@@ -169,6 +206,7 @@ function render(){
   document.getElementById("wl-btn").textContent = x.wlbtn;
   document.getElementById("consent").textContent = x.consent;
   footer.textContent = x.footer;
+  renderEns();
   const s = document.getElementById("seeds"); s.innerHTML = `<span style="align-self:center;font-size:.85rem;color:var(--dim)">${x.seeds}</span>`;
   SEEDS.forEach(seed=>{
     const b = document.createElement("button"); b.className="seed"; b.textContent = seed.label[lang];
@@ -188,7 +226,7 @@ function convene(){
   const body = document.getElementById("body").value.trim();
   if(!body) return;
   lastTitle = title.value.trim() || body.slice(0,60);
-  feed.innerHTML = ""; verdict.innerHTML = ""; lastVerdict = null;
+  feed.innerHTML = ""; verdict.innerHTML = ""; document.getElementById("dist").innerHTML = ""; lastVerdict = null;
   go.disabled = true; go.textContent = t().running;
   const url = `/deliberate/stream?title=${encodeURIComponent(lastTitle)}&body=${encodeURIComponent(body)}&council=${encodeURIComponent(council.value)}`;
   const es = new EventSource(url);
@@ -230,6 +268,73 @@ function convene(){
   es.onerror = done;
 }
 function esc(s){ const d=document.createElement("div"); d.textContent=s??""; return d.innerHTML; }
+
+/* ---- ensemble mode: N councils → live verdict distribution ---- */
+let lastEnsemble = null;
+function renderEns(){
+  const n = document.getElementById("runs").value;
+  document.getElementById("ensgo").textContent = t().ensGo(n);
+  document.getElementById("ensnote").textContent = t().ensNote;
+}
+const STANCE_ORDER = ["support","conditional","oppose","split"];
+const STANCE_EMOJI = {support:"✅",conditional:"🤔",oppose:"❌",split:"➗"};
+function distBars(tally, doneRuns){
+  return STANCE_ORDER.filter(s=>tally[s]).map(s=>{
+    const n = tally[s], pct = Math.round(100*n/doneRuns);
+    return `<div class="drow"><div class="dlabel">${STANCE_EMOJI[s]} ${t().stanceNames[s]||s}</div>
+      <div class="dtrack"><div class="dfill ${s}" style="width:${pct}%"></div></div>
+      <div class="dpct">${pct}% · ${n}</div></div>`;
+  }).join("");
+}
+function conveneMany(){
+  const body = document.getElementById("body").value.trim();
+  if(!body) return;
+  lastTitle = title.value.trim() || body.slice(0,60);
+  feed.innerHTML = ""; verdict.innerHTML = ""; lastVerdict = null; lastEnsemble = null;
+  const runs = parseInt(document.getElementById("runs").value,10);
+  const ensgo = document.getElementById("ensgo");
+  ensgo.disabled = true; go.disabled = true; ensgo.textContent = t().ensRunning(0,runs);
+  const distEl = document.getElementById("dist");
+  const tally = {}; let doneRuns = 0;
+  distEl.innerHTML = `<div class="dist"><h2>${t().distT}</h2><div class="dprog" id="dprog">${t().ensRunning(0,runs)}</div><div id="dbars"></div><div class="dmeta" id="dmeta"></div></div>`;
+  const url = `/simulate/stream?title=${encodeURIComponent(lastTitle)}&body=${encodeURIComponent(body)}&council=${encodeURIComponent(council.value)}&runs=${runs}`;
+  const es = new EventSource(url);
+  const done = ()=>{ es.close(); ensgo.disabled=false; go.disabled=false; renderEns(); go.textContent=t().go; loadStats(); };
+  es.addEventListener("run", e=>{
+    const d = JSON.parse(e.data);
+    doneRuns++; tally[d.stance] = (tally[d.stance]||0)+1;
+    document.getElementById("dprog").textContent = t().ensRunning(doneRuns, d.total||runs);
+    document.getElementById("dbars").innerHTML = distBars(tally, doneRuns);
+    ensgo.textContent = t().ensRunning(doneRuns, d.total||runs);
+  });
+  es.addEventListener("ensemble", e=>{
+    const d = JSON.parse(e.data); lastEnsemble = d;
+    document.getElementById("dprog").textContent = "";
+    document.getElementById("dbars").innerHTML = distBars(d.outcome_dist, d.runs);
+    const rec = (d.recurring_dissent||[]).length
+      ? `<div class="dissent" style="margin-top:.8rem"><b>${t().recDissent}:</b> ${esc(d.recurring_dissent[0])}</div>` : "";
+    document.getElementById("dmeta").innerHTML =
+      `${t().flip}: <b>${Math.round(d.flip_rate*100)}%</b> · ${t().avgConf}: <b>${Math.round(d.avg_confidence*100)}%</b>${rec}
+       <div class="disc" style="margin-top:.7rem">${esc(d.disclaimer||"")}</div>
+       <button class="cardbtn" onclick="copyShareEns()" id="enssharebtn" style="margin-top:.6rem">${t().ensShare}</button>
+       <div><a class="starcta" href="https://github.com/minghui31/quorum-ai" target="_blank" rel="noopener">${t().starcta}</a></div>`;
+    done();
+  });
+  es.addEventListener("error", e=>{ if(e.data){ const d=JSON.parse(e.data); document.getElementById("dprog").textContent = "⚠️ "+(d.message||"error"); } done(); });
+  es.onerror = done;
+}
+async function copyShareEns(){
+  if(!lastEnsemble) return;
+  const d = lastEnsemble, total = d.runs;
+  const parts = STANCE_ORDER.filter(s=>d.outcome_dist[s]).map(s=>`${Math.round(100*d.outcome_dist[s]/total)}% ${t().stanceNames[s]||s}`).join(" / ");
+  const rec = (d.recurring_dissent||[])[0] || "";
+  const txt = lang==="zh"
+    ? `我让 ${total} 个AI议事会审了同一个案子：「${lastTitle}」\n结果：${parts}\n${rec?`反复出现的异议：“${rec.slice(0,80)}”\n`:""}github.com/minghui31/quorum-ai`
+    : `I convened ${total} independent AI councils on: "${lastTitle}"\nResult: ${parts}\n${rec?`Recurring dissent: "${rec.slice(0,80)}"\n`:""}github.com/minghui31/quorum-ai`;
+  await navigator.clipboard.writeText(txt);
+  const b = document.getElementById("enssharebtn"); b.textContent = t().copied;
+  setTimeout(()=>{ b.textContent = t().ensShare; }, 1500);
+}
 
 /* ---- the shareable verdict card (1200x630 PNG) ---- */
 function wrap(ctx, text, x, y, maxW, lh, maxLines){

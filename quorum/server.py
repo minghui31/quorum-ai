@@ -147,3 +147,41 @@ async def stream(title: str, body: str, council: str = "careers", language: str 
             yield {"event": event.get("type", "message"), "data": json.dumps(event, ensure_ascii=False)}
 
     return EventSourceResponse(gen())
+
+
+@app.get("/simulate/stream")
+async def simulate_stream(title: str, body: str, council: str = "careers",
+                          language: str = "auto", runs: int = 5):
+    """SSE ensemble: N independent councils; per-run tallies stream in live,
+    final event is the distribution. Hosted-demo cost guard: runs capped by
+    QUORUM_WEB_MAX_RUNS (default 5) on top of QUORUM_MAX_RUNS."""
+    from sse_starlette.sse import EventSourceResponse
+
+    from .montecarlo import simulate as mc_simulate
+
+    web_cap = int(os.environ.get("QUORUM_WEB_MAX_RUNS", "5"))
+    runs = max(1, min(runs, web_cap))
+
+    q: queue.Queue = queue.Queue()
+    case = Case(title=title, body=body, council=council, language=language)
+
+    def work():
+        try:
+            mc_simulate(case, load_council(council), runs=runs, on_event=q.put)
+            _bump()
+        except Exception as exc:
+            q.put({"type": "error", "message": str(exc)})
+        finally:
+            q.put(None)
+
+    threading.Thread(target=work, daemon=True).start()
+
+    async def gen():
+        loop = asyncio.get_event_loop()
+        while True:
+            event = await loop.run_in_executor(None, q.get)
+            if event is None:
+                break
+            yield {"event": event.get("type", "message"), "data": json.dumps(event, ensure_ascii=False)}
+
+    return EventSourceResponse(gen())
