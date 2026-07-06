@@ -191,12 +191,14 @@ const SEEDS = [
    body:{en:"Friday night, raining, third hotpot this week. Famous pizza place is 20 minutes away; hotpot is 5 minutes away and tastes like home.",
          zh:"周五晚上，下雨，这周已经吃了三次火锅。名气很大的披萨店在 20 分钟外；火锅店 5 分钟就到，而且是家的味道。"}},
 ];
-let lang = "en", lastVerdict = null, lastTitle = "";
+// Auto-detect: Chinese browsers get the Chinese UI by default (toggle stays available).
+let lang = (navigator.language||"").toLowerCase().startsWith("zh") ? "zh" : "en", lastVerdict = null, lastTitle = "";
 
 function t(){ return I18N[lang]; }
 function toggleLang(){ lang = lang==="en" ? "zh" : "en"; document.getElementById("langbtn").textContent = lang==="en"?"中文":"EN"; render(); }
 function render(){
   const x = t();
+  document.getElementById("langbtn").textContent = lang==="en" ? "中文" : "EN";
   tagline.textContent = x.tagline;
   document.getElementById("l-council").textContent = x.council;
   document.getElementById("l-title").textContent = x.title;
