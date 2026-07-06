@@ -179,12 +179,21 @@ async def simulate_stream(title: str, body: str, council: str = "careers",
     web_cap = int(os.environ.get("QUORUM_WEB_MAX_RUNS", "5"))
     runs = max(1, min(runs, web_cap))
 
+    # Ensembles measure the SPLIT, not prose quality → run them on a cheap fast
+    # model (~5x cheaper). The single-council flagship stays on the premium model.
+    ens_backend = None
+    if os.environ.get("ANTHROPIC_API_KEY"):
+        from .backends import AnthropicBackend
+
+        ens_backend = AnthropicBackend(
+            model=os.environ.get("QUORUM_ENSEMBLE_MODEL", "claude-haiku-4-5-20251001"))
+
     q: queue.Queue = queue.Queue()
     case = Case(title=title, body=body, council=council, language=language)
 
     def work():
         try:
-            mc_simulate(case, load_council(council), runs=runs, on_event=q.put)
+            mc_simulate(case, load_council(council), runs=runs, backend=ens_backend, on_event=q.put)
             _bump()
         except Exception as exc:
             q.put({"type": "error", "message": str(exc)})
