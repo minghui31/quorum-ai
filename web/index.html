@@ -300,7 +300,7 @@ function conveneMany(){
   ensgo.disabled = true; go.disabled = true; ensgo.textContent = t().ensRunning(0,runs);
   const distEl = document.getElementById("dist");
   const tally = {}; let doneRuns = 0;
-  distEl.innerHTML = `<div class="dist"><h2>${t().distT}</h2><div class="dprog" id="dprog">${t().ensRunning(0,runs)}</div><div id="dbars"></div><div class="dmeta" id="dmeta"></div></div>`;
+  distEl.innerHTML = `<div class="dist"><h2>${t().distT} · ${runs} ${lang==="zh"?"个独立议事会":"independent councils"}</h2><div class="dprog" id="dprog">${t().ensRunning(0,runs)}</div><div id="dbars"></div><div class="dmeta" id="dmeta"></div></div>`;
   const url = `/simulate/stream?title=${encodeURIComponent(lastTitle)}&body=${encodeURIComponent(body)}&council=${encodeURIComponent(council.value)}&runs=${runs}`;
   const es = new EventSource(url);
   const done = ()=>{ es.close(); ensgo.disabled=false; go.disabled=false; renderEns(); go.textContent=t().go; loadStats(); };
