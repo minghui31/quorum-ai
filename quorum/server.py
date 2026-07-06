@@ -87,7 +87,8 @@ class WaitlistIn(BaseModel):
 
 @app.get("/")
 def index() -> FileResponse:
-    return FileResponse(_WEB_INDEX)
+    # no-cache: visitors always get the latest UI (browsers cached stale pages during launch prep)
+    return FileResponse(_WEB_INDEX, headers={"Cache-Control": "no-cache"})
 
 
 @app.get("/councils")

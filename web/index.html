@@ -140,6 +140,7 @@ const I18N = {
     ensRunning:(i,n)=>`${i}/${n} councils have voted…`,
     ensNote:"One council gives an answer. Several show how contested it is. Hosted demo caps at 5 — pip install quorum-ai to run 100.",
     distT:"📊 Verdict distribution", flip:"flip rate", avgConf:"avg confidence",
+    modalV:"Majority verdict",
     recDissent:"Recurring dissent", ensShare:"📋 Copy share text",
     stanceNames:{support:"support",oppose:"oppose",conditional:"conditional",split:"split"},
     stats:n=>`${n} councils convened`,
@@ -160,6 +161,7 @@ const I18N = {
     ensRunning:(i,n)=>`${i}/${n} 个议事会已投票…`,
     ensNote:"一个议事会给你答案，多个议事会告诉你这个答案有多大争议。托管演示上限 5 个 — pip install quorum-ai 可跑 100 个。",
     distT:"📊 裁定分布", flip:"翻转率", avgConf:"平均信心",
+    modalV:"多数裁定",
     recDissent:"反复出现的异议", ensShare:"📋 复制分享文案",
     stanceNames:{support:"支持",oppose:"反对",conditional:"有条件",split:"分裂"},
     stats:n=>`已召开 ${n} 次议事会`,
@@ -312,7 +314,10 @@ function conveneMany(){
   es.addEventListener("ensemble", e=>{
     const d = JSON.parse(e.data); lastEnsemble = d;
     document.getElementById("dprog").textContent = "";
-    document.getElementById("dbars").innerHTML = distBars(d.outcome_dist, d.runs);
+    const decision = (d.sample_verdict && d.sample_verdict.decision) || "";
+    document.getElementById("dbars").innerHTML =
+      (decision ? `<div style="font-size:1.05rem;font-weight:800;margin:.2rem 0 .8rem">⚖️ ${t().modalV}: ${esc(decision)}</div>` : "")
+      + distBars(d.outcome_dist, d.runs);
     const rec = (d.recurring_dissent||[]).length
       ? `<div class="dissent" style="margin-top:.8rem"><b>${t().recDissent}:</b> ${esc(d.recurring_dissent[0])}</div>` : "";
     document.getElementById("dmeta").innerHTML =
@@ -330,9 +335,10 @@ async function copyShareEns(){
   const d = lastEnsemble, total = d.runs;
   const parts = STANCE_ORDER.filter(s=>d.outcome_dist[s]).map(s=>`${Math.round(100*d.outcome_dist[s]/total)}% ${t().stanceNames[s]||s}`).join(" / ");
   const rec = (d.recurring_dissent||[])[0] || "";
+  const dec = ((d.sample_verdict&&d.sample_verdict.decision)||"").slice(0,90);
   const txt = lang==="zh"
-    ? `我让 ${total} 个AI议事会审了同一个案子：「${lastTitle}」\n结果：${parts}\n${rec?`反复出现的异议：“${rec.slice(0,80)}”\n`:""}github.com/minghui31/quorum-ai`
-    : `I convened ${total} independent AI councils on: "${lastTitle}"\nResult: ${parts}\n${rec?`Recurring dissent: "${rec.slice(0,80)}"\n`:""}github.com/minghui31/quorum-ai`;
+    ? `我让 ${total} 个AI议事会审了同一个案子：「${lastTitle}」\n${dec?`多数裁定:${dec}\n`:""}结果：${parts}\n${rec?`反复出现的异议：“${rec.slice(0,80)}”\n`:""}github.com/minghui31/quorum-ai`
+    : `I convened ${total} independent AI councils on: "${lastTitle}"\n${dec?`Majority verdict: ${dec}\n`:""}Result: ${parts}\n${rec?`Recurring dissent: "${rec.slice(0,80)}"\n`:""}github.com/minghui31/quorum-ai`;
   await navigator.clipboard.writeText(txt);
   const b = document.getElementById("enssharebtn"); b.textContent = t().copied;
   setTimeout(()=>{ b.textContent = t().ensShare; }, 1500);
