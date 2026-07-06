@@ -131,6 +131,22 @@
 - Account plan: user creating HN/Reddit/X/小红书/掘金/PyPI accounts now (aging
   matters most for Reddit karma filters; HN + 小红书 nearly age-blind).
 
+## Ensemble mode SHIPPED to web demo — 2026-07-06 late night
+- /simulate/stream (SSE): live distribution bars fill as councils vote;
+  majority verdict shown above bars; flip rate + avg confidence + recurring
+  dissent + share text (EN/zh). Panel header shows council count.
+- Cost engineering (all measured, not guessed): user's 5-council Sonnet run
+  = $0.38 → ensembles now run on Haiku (QUORUM_ENSEMBLE_MODEL) ≈ $0.07/click;
+  default selector ×3; server cap QUORUM_WEB_MAX_RUNS=5; single-council
+  flagship stays premium. $38 budget ≈ 400-900 ensemble clicks.
+- Counter hardened: persisted to disk + QUORUM_COUNT_FLOOR env (set to 15 via
+  dashboard; deploys had been resetting social proof to 0).
+- zh auto-detect (navigator.language) → Chinese browsers land on 中文 UI.
+- Waitlist copy now teases "100-council deep reports on hosted version"
+  (demand capture; NO pricing shown — monetization is post-OPT only, §10 of
+  launch kit has the full ladder: $4.99/20, $19.99/100-report, margin-first).
+- no-cache header on index (stale-page bug during rapid deploys).
+
 ## Day 3 check-in — 2026-07-05 (calendar Day 3; progress ≈ playbook Day 6)
 - Since last check-in: demo GIF (live real-Claude run) in README, promo cards ×4
   exported, virality pass (og/twitter tags, star CTAs, favicon, topics, social
