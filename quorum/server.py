@@ -45,13 +45,29 @@ _WEB_INDEX = Path(__file__).parent.parent / "web" / "index.html"
 _DATA_DIR = Path(os.environ.get("QUORUM_DATA_DIR", "."))
 
 _lock = threading.Lock()
-_councils_run = 0
+_COUNTER_FILE = _DATA_DIR / "councils_run.txt"
+
+
+def _read_count() -> int:
+    try:
+        return int(_COUNTER_FILE.read_text().strip() or 0)
+    except (OSError, ValueError):
+        return 0
+
+
+# Survives free-tier sleeps via file; QUORUM_COUNT_FLOOR (env) guards against
+# resets on redeploys (set it to the last known count in the dashboard).
+_councils_run = max(_read_count(), int(os.environ.get("QUORUM_COUNT_FLOOR", "0")))
 
 
 def _bump() -> None:
     global _councils_run
     with _lock:
         _councils_run += 1
+        try:
+            _COUNTER_FILE.write_text(str(_councils_run))
+        except OSError:
+            pass  # counter is best-effort; never break a deliberation over it
 
 
 class CaseIn(BaseModel):
