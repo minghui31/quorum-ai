@@ -61,6 +61,10 @@ class Verdict:
     ballots: list[Ballot]
     disclaimer: str
     language: str
+    # The versioned, auditable Decision Record for this deliberation
+    # (full trail: openings, cross-exam, ballots, verdict + integrity hash).
+    # Populated by the engine at the end of run(). See quorum/record.py.
+    record: dict[str, Any] = field(default_factory=dict)
 
     def to_dict(self) -> dict[str, Any]:
         return asdict(self)

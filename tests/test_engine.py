@@ -73,6 +73,34 @@ def test_broken_json_fallback_parsing():
     assert len(v["action_plan"]) == 2
 
 
+def test_decision_record():
+    import json as _json
+
+    from quorum.record import RECORD_VERSION, verify_record
+
+    events = []
+    v = deliberate(
+        Case(title="Offer A vs B?", body="Two offers, which one?", council="careers"),
+        backend=MockBackend(),
+        on_event=events.append,
+    )
+    r = v.record
+    assert r["record_version"] == RECORD_VERSION
+    assert r["id"].startswith("qr_")
+    assert len(r["deliberation"]["openings"]) == 5
+    assert len(r["deliberation"]["ballots"]) == 5
+    assert r["deliberation"]["cross_examination"]["challenge"]
+    assert len(r["deliberation"]["cross_examination"]["rebuttals"]) == 4  # all but the skeptic
+    assert r["verdict"]["decision"] and r["disclaimer"]
+    assert r["engine"]["backend"] == "mock"
+    assert verify_record(r), "integrity hash must validate"
+    tampered = _json.loads(_json.dumps(r)); tampered["verdict"]["decision"] = "changed"
+    assert not verify_record(tampered), "tampering must break the hash"
+    assert any(e["type"] == "record" for e in events)
+    # record rides inside the verdict dict too (additive API surface)
+    assert v.to_dict()["record"]["id"] == r["id"]
+
+
 def test_monte_carlo_ensemble():
     from quorum.montecarlo import simulate
 

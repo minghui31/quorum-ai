@@ -30,6 +30,22 @@
 **保留异议而不是把它平均掉**的最终裁定。共识不等于验证——五个智能体
 瞬间达成一致是警报，不是结论。Quorum 就建立在这个理念上。
 
+## 每次审议都是一份「决策档案」
+
+ChatGPT 用来聊天，**Quorum 用来做决定** —— 而决定的价值在于事后可审计。
+每次审议都会生成一份**决策档案（Decision Record）**：带版本号的结构化 JSON，
+完整记录全过程 —— 案情框定、每位议员的独立陈述、交叉质询、每张带置信度的
+选票、最终裁定**以及异议**，并用 SHA-256 完整性哈希封存。
+可以理解为 **git for decisions**：档案是 commit，落选的异议就是那条没被合并的 diff。
+
+```bash
+quorum deliberate examples/offer_case.yaml --record decision.json
+```
+
+网页演示（⬇️ 决策档案按钮）和 API（`POST /deliberate` 返回、SSE 流以
+`record` 事件结尾）同样提供。用 `quorum.record.verify_record(r)`
+可校验档案是否被篡改。
+
 ## 不是又一个"多模型合议"
 
 "把同一个问题发给几个 AI 再汇总答案"已经有人做了。Quorum 押注的是另一件事：

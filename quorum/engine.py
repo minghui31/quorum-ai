@@ -215,4 +215,21 @@ class Deliberation:
             language=lang,
         )
         self._emit(type="verdict", **verdict.to_dict())
+
+        # The Decision Record: the full auditable trail as a versioned artifact.
+        from .record import build_record
+
+        verdict.record = build_record(
+            case,
+            self.council,
+            body_redacted=body,
+            language=lang,
+            openings=openings,
+            challenger_id=skeptic.id,
+            challenge=challenge,
+            rebuttals=rebuttals,
+            verdict=verdict,
+            backend_name=self.backend.name,
+        )
+        self._emit(type="record", record=verdict.record)
         return verdict

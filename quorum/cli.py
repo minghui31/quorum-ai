@@ -125,11 +125,15 @@ def main(argv: list[str] | None = None) -> int:
     d.add_argument("case", help="Path to a case YAML file")
     d.add_argument("--backend", choices=["anthropic", "openai", "camel", "mock"], default=None)
     d.add_argument("--json", action="store_true", help="Print the verdict as JSON")
+    d.add_argument("--record", metavar="PATH", default=None,
+                   help="Save the full Decision Record (versioned, auditable JSON) to PATH")
 
     demo = sub.add_parser("demo", help="Run the built-in fun demo (works with zero API keys)")
     demo.add_argument("--backend", choices=["anthropic", "openai", "camel", "mock"], default=None)
     demo.add_argument("--serious", action="store_true", help="Run the serious careers demo instead")
     demo.add_argument("--json", action="store_true")
+    demo.add_argument("--record", metavar="PATH", default=None,
+                      help="Save the full Decision Record (versioned, auditable JSON) to PATH")
 
     sim = sub.add_parser("simulate", help="Monte-Carlo: convene N councils, show the verdict distribution")
     sim.add_argument("case", help="Path to a case YAML file")
@@ -170,6 +174,10 @@ def main(argv: list[str] | None = None) -> int:
         raise
     if args.json:
         print(json.dumps(verdict.to_dict(), ensure_ascii=False, indent=2))
+    if getattr(args, "record", None):
+        Path(args.record).write_text(
+            json.dumps(verdict.record, ensure_ascii=False, indent=2), encoding="utf-8")
+        _print(f"\n📋 Decision record saved → {args.record}  (id: {verdict.record.get('id', '?')})", "bold")
     return 0
 
 

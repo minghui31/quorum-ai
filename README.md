@@ -31,6 +31,30 @@ a structured vote with confidence levels, and a verdict that **preserves the dis
 instead of averaging it away**. Consensus is not verification — when five agents agree
 instantly, that's a red flag, not a conclusion. Quorum is built around that idea.
 
+## Every deliberation is a Decision Record
+
+ChatGPT is for chat. **Quorum is for decisions** — and a decision is only worth
+what you can audit later. Every run emits a **decision record**: a versioned,
+structured JSON artifact carrying the full trail — the framing, every agent's
+independent opening, the adversarial cross-examination, each ballot with its
+confidence, the verdict *and* the dissent, sealed with a SHA-256 integrity hash.
+Think **git for decisions**: the record is the commit; the dissent is the diff
+that didn't win.
+
+```bash
+quorum deliberate examples/offer_case.yaml --record decision.json
+```
+
+```python
+v = deliberate(case)
+v.record             # the full decision record (dict)
+v.record["id"]       # qr_… — stable, content-derived
+```
+
+Also available from the web demo (⬇️ Decision record) and the API
+(`POST /deliberate` returns it; the SSE stream ends with a `record` event).
+Verify any record hasn't been altered: `quorum.record.verify_record(r)`.
+
 ## Not another multi-model council
 
 "Ask several AIs and merge the answers" already exists — products send one question
