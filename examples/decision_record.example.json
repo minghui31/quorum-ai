@@ -1,0 +1,151 @@
+{
+  "record_version": "1.0",
+  "created_at": "2026-07-07T04:12:42+00:00",
+  "engine": {
+    "name": "quorum-ai",
+    "version": "0.1.0",
+    "backend": "mock",
+    "protocol": "brief/openings/cross-exam/vote/verdict v1"
+  },
+  "case": {
+    "title": "Offer A (stable, boring) vs Offer B (risky, rocket ship)?",
+    "body": "Two offers on the table; three years into my career; want staff engineer or founder by 30.",
+    "council": "careers",
+    "language": "en",
+    "context": {}
+  },
+  "council": {
+    "name": "careers",
+    "description": "A career & immigration council for people building a life in a new country. It deliberates job, visa, and career-strategy decisions.\n",
+    "councilors": [
+      {
+        "id": "recruiter",
+        "role": "Tech Recruiter",
+        "emoji": "🎯",
+        "is_skeptic": false
+      },
+      {
+        "id": "hiring_manager",
+        "role": "Hiring Manager",
+        "emoji": "🧑‍💼",
+        "is_skeptic": false
+      },
+      {
+        "id": "visa_officer",
+        "role": "Visa Analyst",
+        "emoji": "🛂",
+        "is_skeptic": false
+      },
+      {
+        "id": "mentor",
+        "role": "Career Mentor",
+        "emoji": "🌱",
+        "is_skeptic": false
+      },
+      {
+        "id": "skeptic",
+        "role": "The Skeptic",
+        "emoji": "🔥",
+        "is_skeptic": true
+      }
+    ]
+  },
+  "deliberation": {
+    "openings": [
+      {
+        "councilor_id": "recruiter",
+        "text": "The fundamentals check out; the risk is concentrated in a single dependency."
+      },
+      {
+        "councilor_id": "hiring_manager",
+        "text": "My advice: commit, but stage it. The all-at-once version of this plan is fragile."
+      },
+      {
+        "councilor_id": "visa_officer",
+        "text": "My advice: commit, but stage it. The all-at-once version of this plan is fragile."
+      },
+      {
+        "councilor_id": "mentor",
+        "text": "The fundamentals check out; the risk is concentrated in a single dependency."
+      },
+      {
+        "councilor_id": "skeptic",
+        "text": "I see real substance here, though one gap worries me and I'd want it closed first."
+      }
+    ],
+    "cross_examination": {
+      "challenger_id": "skeptic",
+      "challenge": "Devil's advocate: everyone is assuming the best-case timeline. What happens if the single most likely thing goes wrong first?",
+      "rebuttals": [
+        {
+          "councilor_id": "recruiter",
+          "text": "Fair challenge — but a staged approach absorbs exactly that failure mode, which is why I stand by my position."
+        },
+        {
+          "councilor_id": "hiring_manager",
+          "text": "Fair challenge — but a staged approach absorbs exactly that failure mode, which is why I stand by my position."
+        },
+        {
+          "councilor_id": "visa_officer",
+          "text": "Fair challenge — but a staged approach absorbs exactly that failure mode, which is why I stand by my position."
+        },
+        {
+          "councilor_id": "mentor",
+          "text": "Fair challenge — but a staged approach absorbs exactly that failure mode, which is why I stand by my position."
+        }
+      ]
+    },
+    "ballots": [
+      {
+        "councilor_id": "recruiter",
+        "stance": "support",
+        "confidence": 0.73,
+        "reasoning": "Weighing upside against the identified risks, this is my honest read."
+      },
+      {
+        "councilor_id": "hiring_manager",
+        "stance": "support",
+        "confidence": 0.67,
+        "reasoning": "Weighing upside against the identified risks, this is my honest read."
+      },
+      {
+        "councilor_id": "visa_officer",
+        "stance": "support",
+        "confidence": 0.85,
+        "reasoning": "Weighing upside against the identified risks, this is my honest read."
+      },
+      {
+        "councilor_id": "mentor",
+        "stance": "support",
+        "confidence": 0.55,
+        "reasoning": "Weighing upside against the identified risks, this is my honest read."
+      },
+      {
+        "councilor_id": "skeptic",
+        "stance": "oppose",
+        "confidence": 0.7,
+        "reasoning": "Weighing upside against the identified risks, this is my honest read."
+      }
+    ]
+  },
+  "verdict": {
+    "decision": "Proceed — in stages, with the flagged gap closed first.",
+    "summary": "The council leans support: the fundamentals hold, but the majority conditions its support on de-risking the single point of failure identified in cross-examination.",
+    "vote_tally": {
+      "support": 4,
+      "oppose": 1
+    },
+    "dissent": "One councilor holds that the timeline is too optimistic and would wait one cycle before committing.",
+    "action_plan": [
+      "Close the single biggest gap identified by the council within 30 days.",
+      "Split the plan into two stages with a clear go/no-go checkpoint.",
+      "Line up one credible fallback option before stage two."
+    ]
+  },
+  "disclaimer": "⚖️ Illustrative guidance, not a guarantee. Quorum's verdicts are AI-generated perspectives based on patterns, not predictions of real outcomes, and are not legal, immigration, or financial advice. For visa or legal decisions, consult a licensed attorney.",
+  "id": "qr_0591d02e93e8254b",
+  "integrity": {
+    "algorithm": "sha256",
+    "content_hash": "0591d02e93e8254b6c5fd6522c5f170e6deea48701f8e468c3fc228c01eae93f"
+  }
+}

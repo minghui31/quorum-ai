@@ -1,0 +1,119 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/minghui31/quorum-ai/blob/main/schemas/decision-record-1.0.schema.json",
+  "title": "Quorum Decision Record",
+  "description": "A versioned, auditable artifact of one multi-agent deliberation. The record is the commit; the dissent is the diff that didn't win. Additive fields do not bump record_version; breaking changes do.",
+  "type": "object",
+  "required": ["record_version", "id", "created_at", "engine", "case", "council", "deliberation", "verdict", "disclaimer", "integrity"],
+  "properties": {
+    "record_version": { "type": "string", "pattern": "^1\\." },
+    "id": { "type": "string", "pattern": "^qr_[0-9a-f]{16}$", "description": "Content-derived: qr_ + first 16 hex chars of the integrity hash" },
+    "created_at": { "type": "string", "format": "date-time" },
+    "engine": {
+      "type": "object",
+      "required": ["name", "version", "backend", "protocol"],
+      "properties": {
+        "name": { "type": "string" },
+        "version": { "type": "string" },
+        "backend": { "type": "string", "description": "anthropic | openai-compatible | camel | mock" },
+        "protocol": { "type": "string" }
+      }
+    },
+    "case": {
+      "type": "object",
+      "required": ["title", "body", "council", "language"],
+      "properties": {
+        "title": { "type": "string" },
+        "body": { "type": "string", "description": "The deliberated framing, AFTER PII redaction" },
+        "council": { "type": "string" },
+        "language": { "type": "string", "enum": ["en", "zh"] },
+        "context": { "type": "object" }
+      }
+    },
+    "council": {
+      "type": "object",
+      "required": ["name", "councilors"],
+      "properties": {
+        "name": { "type": "string" },
+        "description": { "type": "string" },
+        "councilors": {
+          "type": "array", "minItems": 2,
+          "items": {
+            "type": "object",
+            "required": ["id", "role"],
+            "properties": {
+              "id": { "type": "string" },
+              "role": { "type": "string" },
+              "emoji": { "type": "string" },
+              "is_skeptic": { "type": "boolean" }
+            }
+          }
+        }
+      }
+    },
+    "deliberation": {
+      "type": "object",
+      "required": ["openings", "cross_examination", "ballots"],
+      "properties": {
+        "openings": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["councilor_id", "text"],
+            "properties": { "councilor_id": { "type": "string" }, "text": { "type": "string" } }
+          },
+          "description": "Independent parallel positions — no agent saw another's answer first"
+        },
+        "cross_examination": {
+          "type": "object",
+          "required": ["challenger_id", "challenge", "rebuttals"],
+          "properties": {
+            "challenger_id": { "type": "string" },
+            "challenge": { "type": "string" },
+            "rebuttals": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "required": ["councilor_id", "text"],
+                "properties": { "councilor_id": { "type": "string" }, "text": { "type": "string" } }
+              }
+            }
+          }
+        },
+        "ballots": {
+          "type": "array", "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": ["councilor_id", "stance", "confidence"],
+            "properties": {
+              "councilor_id": { "type": "string" },
+              "stance": { "type": "string", "enum": ["support", "oppose", "conditional"] },
+              "confidence": { "type": "number", "minimum": 0, "maximum": 1 },
+              "reasoning": { "type": "string" }
+            }
+          }
+        }
+      }
+    },
+    "verdict": {
+      "type": "object",
+      "required": ["decision", "summary", "vote_tally"],
+      "properties": {
+        "decision": { "type": "string" },
+        "summary": { "type": "string" },
+        "vote_tally": { "type": "object", "additionalProperties": { "type": "integer" } },
+        "dissent": { "type": "string", "description": "The strongest minority view — preserved, never averaged away" },
+        "action_plan": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "disclaimer": { "type": "string", "description": "Travels with the record, always. Illustrative guidance, not professional advice." },
+    "integrity": {
+      "type": "object",
+      "required": ["algorithm", "content_hash"],
+      "properties": {
+        "algorithm": { "type": "string", "const": "sha256" },
+        "content_hash": { "type": "string", "pattern": "^[0-9a-f]{64}$", "description": "sha256 of the canonical (sorted-keys, compact) JSON of the record minus id and integrity" }
+      }
+    }
+  }
+}

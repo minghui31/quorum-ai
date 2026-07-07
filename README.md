@@ -182,8 +182,11 @@ pip install "quorum-ai[server]" && uvicorn quorum.server:app
 
 ## Roadmap
 
-Persona marketplace · multi-round debate mode · citation/source hooks per councilor ·
-council-of-councils · more built-in councils (relocation, grad school, pricing).
+Playground as the demo surface → records where work happens (GitHub Action,
+Slack `/quorum`, Notion/Linear export) → domain packs for professional
+decisions (always human-ratified) → record signing. Engine stays AGPL forever —
+the full trajectory and the open-core promise are in **[ROADMAP.md](ROADMAP.md)**;
+the format contract is **[docs/DECISION_RECORD.md](docs/DECISION_RECORD.md)**.
 
 ## Contributing
 

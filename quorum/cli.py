@@ -141,7 +141,22 @@ def main(argv: list[str] | None = None) -> int:
     sim.add_argument("--backend", choices=["anthropic", "openai", "camel", "mock"], default=None)
     sim.add_argument("--json", action="store_true")
 
+    ver = sub.add_parser("verify", help="Verify a Decision Record's integrity hash")
+    ver.add_argument("record", help="Path to a decision record JSON file")
+
     args = p.parse_args(argv)
+
+    if args.cmd == "verify":
+        from .record import verify_record
+
+        r = json.loads(Path(args.record).read_text(encoding="utf-8"))
+        ok = verify_record(r)
+        rid, ver_ = r.get("id", "?"), r.get("record_version", "?")
+        if ok:
+            _print(f"✅ {rid} (record v{ver_}) — integrity verified, record is unaltered.", "bold green")
+            return 0
+        _print(f"❌ {rid} (record v{ver_}) — HASH MISMATCH: this record was modified after emission.", "bold red")
+        return 1
 
     if args.cmd == "simulate":
         return _simulate(args)
