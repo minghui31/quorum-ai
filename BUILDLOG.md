@@ -182,3 +182,23 @@
 - Legal: disclaimers + attorney pointers intact (i18n.py ×4, web UI), redact()
   wired pre-LLM (engine.py:123), no case/CV persistence (server docstring
   confirms in-memory only). ✅ CLA counsel review still owed pre-1.0.
+
+## Day 5 check-in — 2026-07-07 (calendar Day 5; progress ≈ playbook D8)
+- Since last check-in: DECISION RECORD v1.0 shipped (76a3fee) — versioned auditable
+  JSON of every deliberation w/ sha256 integrity, emitted by engine/CLI(--record)/
+  API/SSE/web download, tests + README EN/zh; format layer (f12ee75) — JSON Schema,
+  spec doc, committed example, `quorum verify` command, public ROADMAP (open-core).
+  All pushed; origin current at f12ee75. "ChatGPT is for chat, Quorum is for
+  decisions" positioning now has its artifact.
+- ⚠️ Slipped (2nd day): PyPI publish + v0.1.0 tag; founder cheat sheet + hostile-
+  commenter drill; CAMEL "Built with" PR / Discord showcase; Reddit karma warm-up.
+  Build is ahead — the human-and-distribution track is now the critical path.
+- 🎯 Today (launch T-7): (1) PyPI release + v0.1.0 tag per RELEASING.md — blocks
+  all outreach copy (`pip install quorum-ai` must work); (2) founder cheat sheet
+  EN+zh + drill ×1 — biggest launch risk is the human, not the repo; (3) CAMEL
+  "Built with" PR + Discord showcase + first Reddit warm-up posts (organic only).
+- GitHub: 0 stars / 0 forks / 0 watchers. Launch Tue Jul 14 8:30am CDT (T-7).
+- Legal: disclaimers + attorney pointers intact (i18n.py, README Guardrails verified
+  live on GitHub), redact() wired pre-LLM (engine.py:123), in-memory only, no CV
+  storage/training. ✅ CLA counsel review still owed pre-1.0 — L&E Clinic screening
+  pending (~1-2 wks from Jul 4; may land near launch, chase if silent by Jul 10).
