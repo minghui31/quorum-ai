@@ -17,7 +17,7 @@ opening positions → cross-examination → a real vote → a verdict with disse
 
 *A real deliberation on the hosted demo: five personas argue a job-offer-vs-startup case, the Skeptic finds the blind spot everyone missed (IP/moonlighting clauses), and the verdict preserves the dissent.*
 
-🔴 **[Try it live →](https://quorum-brkj.onrender.com)**
+🔴 **[Try it live →](https://quorum-council.com)**
 
 </div>
 

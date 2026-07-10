@@ -32,7 +32,7 @@ all = ["quorum-council[camel,server,cli]"]
 [project.urls]
 Homepage = "https://github.com/minghui31/quorum-ai"
 Repository = "https://github.com/minghui31/quorum-ai"
-"Live demo" = "https://quorum-brkj.onrender.com"
+"Live demo" = "https://quorum-council.com"
 Issues = "https://github.com/minghui31/quorum-ai/issues"
 
 [project.scripts]
