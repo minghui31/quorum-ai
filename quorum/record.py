@@ -38,7 +38,7 @@ from typing import Any
 from .schema import Case, Council, Verdict
 
 RECORD_VERSION = "1.0"
-_ENGINE_VERSION = "0.1.0"
+_ENGINE_VERSION = "0.1.1"
 _PROTOCOL = "brief/openings/cross-exam/vote/verdict v1"
 
 

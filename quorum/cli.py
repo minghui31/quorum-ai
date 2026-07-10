@@ -162,7 +162,7 @@ def main(argv: list[str] | None = None) -> int:
         return _simulate(args)
 
     if args.cmd == "demo":
-        examples = Path(__file__).parent.parent / "examples"
+        examples = Path(__file__).parent / "examples"
         case_path = examples / ("serious_case.yaml" if args.serious else "fun_case.yaml")
         case = _load_case(str(case_path))
     else:
