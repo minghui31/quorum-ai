@@ -23,7 +23,7 @@ import re
 import threading
 from pathlib import Path
 
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request
 from fastapi.responses import FileResponse
 from pydantic import BaseModel, Field
 
@@ -119,6 +119,59 @@ def waitlist(item: WaitlistIn) -> dict:
     return {"ok": True}
 
 
+# --- hosted-demo guards: per-IP daily limit + graceful capacity fallback -----
+
+_ip_hits: dict[str, list] = {}  # ip -> [YYYY-MM-DD, count]
+
+
+def _client_ip(request) -> str:
+    fwd = request.headers.get("x-forwarded-for", "")
+    return (fwd.split(",")[0].strip() or getattr(request.client, "host", "?")) if request else "?"
+
+
+def _ip_allowed(ip: str) -> bool:
+    """True if this IP still has free deliberations today (env: QUORUM_IP_DAILY_LIMIT)."""
+    import datetime as _dt
+
+    limit = int(os.environ.get("QUORUM_IP_DAILY_LIMIT", "12"))
+    if limit <= 0:  # 0 disables the limit
+        return True
+    today = _dt.date.today().isoformat()
+    with _lock:
+        day, n = _ip_hits.get(ip, [today, 0])
+        if day != today:
+            day, n = today, 0
+        if n >= limit:
+            return False
+        _ip_hits[ip] = [day, n + 1]
+    return True
+
+
+def _has_real_backend() -> bool:
+    return bool(os.environ.get("ANTHROPIC_API_KEY") or os.environ.get("OPENAI_API_KEY"))
+
+
+def _run_with_fallback(fn_real, fn_mock, q: queue.Queue) -> None:
+    """Run the real deliberation; if the model API fails (credits exhausted,
+    overloaded, auth), tell the client honestly and replay in mock mode so the
+    demo NEVER breaks — the failure state itself converts to `pip install`."""
+    try:
+        fn_real()
+        _bump()
+    except Exception as exc:
+        if _has_real_backend():
+            q.put({"type": "fallback", "message": str(exc)[:120]})
+            try:
+                fn_mock()
+                _bump()
+            except Exception as exc2:
+                q.put({"type": "error", "message": str(exc2)})
+        else:
+            q.put({"type": "error", "message": str(exc)})
+    finally:
+        q.put(None)
+
+
 @app.post("/deliberate")
 def run(case: CaseIn) -> dict:
     verdict = deliberate(case.to_case()).to_dict()
@@ -137,21 +190,26 @@ def run_ensemble(case: CaseIn, runs: int = 10) -> dict:
 
 
 @app.get("/deliberate/stream")
-async def stream(title: str, body: str, council: str = "careers", language: str = "auto"):
+async def stream(request: Request, title: str, body: str, council: str = "careers", language: str = "auto"):
     """SSE stream of deliberation events — the 'watch them argue' feed."""
     from sse_starlette.sse import EventSourceResponse
+
+    from .backends import MockBackend
 
     q: queue.Queue = queue.Queue()
     case = Case(title=title, body=body, council=council, language=language)
 
+    if not _ip_allowed(_client_ip(request)):
+        async def limited():
+            yield {"event": "limit", "data": json.dumps({"type": "limit"})}
+        return EventSourceResponse(limited())
+
     def work():
-        try:
-            deliberate(case, on_event=q.put)
-            _bump()
-        except Exception as exc:  # surface errors to the client
-            q.put({"type": "error", "message": str(exc)})
-        finally:
-            q.put(None)
+        _run_with_fallback(
+            lambda: deliberate(case, on_event=q.put),
+            lambda: deliberate(case, backend=MockBackend(), on_event=q.put),
+            q,
+        )
 
     threading.Thread(target=work, daemon=True).start()
 
@@ -167,17 +225,23 @@ async def stream(title: str, body: str, council: str = "careers", language: str 
 
 
 @app.get("/simulate/stream")
-async def simulate_stream(title: str, body: str, council: str = "careers",
+async def simulate_stream(request: Request, title: str, body: str, council: str = "careers",
                           language: str = "auto", runs: int = 5):
     """SSE ensemble: N independent councils; per-run tallies stream in live,
     final event is the distribution. Hosted-demo cost guard: runs capped by
     QUORUM_WEB_MAX_RUNS (default 5) on top of QUORUM_MAX_RUNS."""
     from sse_starlette.sse import EventSourceResponse
 
+    from .backends import MockBackend
     from .montecarlo import simulate as mc_simulate
 
     web_cap = int(os.environ.get("QUORUM_WEB_MAX_RUNS", "5"))
     runs = max(1, min(runs, web_cap))
+
+    if not _ip_allowed(_client_ip(request)):
+        async def limited():
+            yield {"event": "limit", "data": json.dumps({"type": "limit"})}
+        return EventSourceResponse(limited())
 
     # Ensembles measure the SPLIT, not prose quality → run them on a cheap fast
     # model (~5x cheaper). The single-council flagship stays on the premium model.
@@ -192,13 +256,11 @@ async def simulate_stream(title: str, body: str, council: str = "careers",
     case = Case(title=title, body=body, council=council, language=language)
 
     def work():
-        try:
-            mc_simulate(case, load_council(council), runs=runs, backend=ens_backend, on_event=q.put)
-            _bump()
-        except Exception as exc:
-            q.put({"type": "error", "message": str(exc)})
-        finally:
-            q.put(None)
+        _run_with_fallback(
+            lambda: mc_simulate(case, load_council(council), runs=runs, backend=ens_backend, on_event=q.put),
+            lambda: mc_simulate(case, load_council(council), runs=runs, backend=MockBackend(), on_event=q.put),
+            q,
+        )
 
     threading.Thread(target=work, daemon=True).start()
 

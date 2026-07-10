@@ -61,6 +61,7 @@
   .dpct{flex:0 0 4.5rem;font-weight:800;font-size:.95rem}
   .dmeta{font-size:.85rem;color:var(--dim);margin-top:.7rem}
   .dprog{font-size:.9rem;color:var(--navy);font-weight:700;margin-bottom:.6rem}
+  .notice{background:#fff4e3;border:2px solid var(--amber);border-radius:12px;padding:.9rem 1.1rem;margin:1rem 0;font-size:.95rem;line-height:1.5;color:#7a4c12;font-weight:600}
   .phase{margin:1.3rem 0 .5rem;font-weight:800;color:var(--navy);font-size:.85rem;letter-spacing:.12em;text-transform:uppercase;border-bottom:2px solid var(--amber);padding-bottom:.25rem}
   .msg{display:flex;gap:.7rem;margin:.7rem 0;animation:pop .3s ease}
   @keyframes pop{from{opacity:0;transform:translateY(6px)}to{opacity:1}}
@@ -136,6 +137,8 @@ const I18N = {
     consent:"By joining, you consent to us storing your email solely to contact you about Quorum. Removal anytime on request — never shared, never used for training.",
     card:"⬇️ Verdict card", card916:"⬇️ Story card (9:16)", copyShare:"📋 Copy share text", copied:"Copied ✓",
     recordBtn:"⬇️ Decision record (JSON)",
+    fallbackNote:"🔥 Live capacity is used up right now — replaying the protocol in mock mode. Run it for real with your own key: pip install quorum-ai",
+    limitNote:"You've used today's free councils on the hosted demo. Run unlimited locally: pip install quorum-ai — or come back tomorrow.",
     starcta:"⭐ Useful? Star it on GitHub",
     ensGo:n=>`🗳️ Convene ${n} councils — see the split`,
     ensRunning:(i,n)=>`${i}/${n} councils have voted…`,
@@ -158,6 +161,8 @@ const I18N = {
     consent:"加入即表示同意我们存储你的邮箱，仅用于 Quorum 相关通知。可随时要求删除——绝不共享，绝不用于训练。",
     card:"⬇️ 裁定卡", card916:"⬇️ 小红书卡片 (9:16)", copyShare:"📋 复制分享文案", copied:"已复制 ✓",
     recordBtn:"⬇️ 决策档案 (JSON)",
+    fallbackNote:"🔥 在线额度暂时用完了——以下为协议演示（mock 模式）。用你自己的 key 即可真实运行：pip install quorum-ai",
+    limitNote:"你今天在托管演示上的免费议事会已用完。本地运行不限量：pip install quorum-ai——或者明天再来。",
     starcta:"⭐ 觉得有用？去 GitHub 点个星",
     ensGo:n=>`🗳️ 召集 ${n} 个议事会 — 看观点分布`,
     ensRunning:(i,n)=>`${i}/${n} 个议事会已投票…`,
@@ -270,6 +275,14 @@ function convene(){
     </div>`;
     // don't close yet — the decision record event follows the verdict
   });
+  es.addEventListener("fallback", e=>{
+    feed.innerHTML = `<div class="notice">${t().fallbackNote}</div>`;
+    verdict.innerHTML = "";
+  });
+  es.addEventListener("limit", e=>{
+    feed.innerHTML = `<div class="notice">${t().limitNote}</div>`;
+    done();
+  });
   es.addEventListener("record", e=>{
     const d = JSON.parse(e.data); lastRecord = d.record || null;
     const v = document.querySelector("#verdict .verdict");
@@ -327,6 +340,15 @@ function conveneMany(){
   const url = `/simulate/stream?title=${encodeURIComponent(lastTitle)}&body=${encodeURIComponent(body)}&council=${encodeURIComponent(council.value)}&runs=${runs}`;
   const es = new EventSource(url);
   const done = ()=>{ es.close(); ensgo.disabled=false; go.disabled=false; renderEns(); go.textContent=t().go; loadStats(); };
+  es.addEventListener("fallback", e=>{
+    doneRuns = 0; for(const k in tally) delete tally[k];
+    document.getElementById("dbars").innerHTML = "";
+    document.getElementById("dprog").innerHTML = `<div class="notice">${t().fallbackNote}</div>`;
+  });
+  es.addEventListener("limit", e=>{
+    document.getElementById("dprog").innerHTML = `<div class="notice">${t().limitNote}</div>`;
+    done();
+  });
   es.addEventListener("run", e=>{
     const d = JSON.parse(e.data);
     doneRuns++; tally[d.stance] = (tally[d.stance]||0)+1;
