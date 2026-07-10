@@ -202,3 +202,47 @@
   live on GitHub), redact() wired pre-LLM (engine.py:123), in-memory only, no CV
   storage/training. ✅ CLA counsel review still owed pre-1.0 — L&E Clinic screening
   pending (~1-2 wks from Jul 4; may land near launch, chase if silent by Jul 10).
+
+## Day 6 check-in — 2026-07-08 (calendar Day 6; launch T-6)
+- Since last check-in: NO new commits — zero repo progress in ~24h. Build remains
+  ahead of playbook, but this is the 3rd consecutive day the distribution track
+  slipped: PyPI + v0.1.0 tag, founder cheat sheet + hostile-commenter drill,
+  CAMEL "Built with" PR / Discord showcase, Reddit karma warm-up — all still
+  not started. Releases page confirms: no tag, no release, `pip install
+  quorum-ai` does not work yet.
+- ⚠️ 1 commit unpushed (d2b2cb2 Day 5 check-in) — origin current at f12ee75.
+- 🎯 Today (T-6, distribution IS the sprint now): (1) PyPI publish + v0.1.0 tag
+  per RELEASING.md — hard blocker for every launch post; (2) founder cheat sheet
+  EN+zh + drill ×1 — six days is the minimum to internalize the four core ideas;
+  (3) CAMEL "Built with" PR + Discord showcase + first Reddit warm-up post
+  (organic only; karma filters need days of lead time, today is the last
+  comfortable start).
+- GitHub: 0 stars / 0 forks / 0 watchers. Launch Tue Jul 14 8:30am CDT.
+- Legal: attorney pointers intact (i18n.py:9,19 + README Guardrails verified live
+  on GitHub), redact() pre-LLM (engine.py:123), server docstring confirms
+  in-memory only / never persisted, illustrative-only labels live. ✅ CLA counsel
+  review owed pre-1.0 — L&E Clinic screening pending; chase if silent by Jul 10.
+
+## Day 8 check-in — 2026-07-10 (calendar Day 8; launch T-4)
+- Note: no Day 7 check-in ran (Jul 9). Since Day 6: 1 commit — e444661 "launch-day
+  armor" (graceful API-failure fallback: honest banner + mock replay so the demo
+  never breaks; per-IP daily limit QUORUM_IP_DAILY_LIMIT=12 w/ friendly
+  pip-install message, EN/zh). Good launch-day resilience work.
+- ⚠️ 2 commits unpushed (d2b2cb2, e444661) — origin stale at f12ee75; GitHub
+  still shows old tree. Push before anything else today.
+- ⚠️ Slipped 4th consecutive day (T-4, now critical): PyPI publish + v0.1.0 tag
+  (`pip install quorum-ai` referenced in the new IP-limit message but does NOT
+  work yet — that's a live credibility bug once pushed); founder cheat sheet +
+  hostile-commenter drill; CAMEL "Built with" PR / Discord showcase; Reddit
+  karma warm-up (window nearly closed for Jul 14 — karma filters need days).
+- 🎯 Today (only what moves the launch): (1) git push + PyPI v0.1.0 tag+release —
+  hard blocker for every launch post AND for the shipped IP-limit copy;
+  (2) founder cheat sheet EN+zh + hostile-commenter drill ×1 — 4 days left to
+  internalize; (3) CAMEL "Built with" PR + Discord showcase today; accept Reddit
+  may be thin and lean HN + 小红书 (both age-blind).
+- GitHub: 0 stars / 0 forks / 0 watchers. No releases. Launch Tue Jul 14
+  8:30am CDT (T-4).
+- Legal: attorney pointers intact (i18n.py ×4), redact() pre-LLM (engine.py:123),
+  server.py:14 confirms in-memory only / never persisted, illustrative-only
+  labels live on GitHub README. ✅ CLA counsel review owed pre-1.0 — L&E Clinic
+  silent since Jul 4 intake; today (Jul 10) is the chase deadline — follow up.
