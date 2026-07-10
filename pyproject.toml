@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "quorum-council"
-version = "0.1.1"
+version = "0.1.2"
 description = "A council of AI agents that deliberate your hardest decisions — and show their work."
 readme = "README.md"
 license = { text = "AGPL-3.0-or-later" }

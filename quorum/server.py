@@ -32,7 +32,7 @@ from .backends import load_env_file
 from .schema import Case
 
 load_env_file()
-app = FastAPI(title="Quorum", version="0.1.1")
+app = FastAPI(title="Quorum", version="0.1.2")
 
 _ASSETS_DIR = Path(__file__).parent.parent / "assets"
 if _ASSETS_DIR.is_dir():
