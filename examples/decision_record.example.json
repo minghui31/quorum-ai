@@ -1,8 +1,8 @@
 {
   "record_version": "1.0",
-  "created_at": "2026-07-07T04:12:42+00:00",
+  "created_at": "2026-07-10T19:04:54+00:00",
   "engine": {
-    "name": "quorum-ai",
+    "name": "quorum-council",
     "version": "0.1.0",
     "backend": "mock",
     "protocol": "brief/openings/cross-exam/vote/verdict v1"
@@ -143,9 +143,9 @@
     ]
   },
   "disclaimer": "⚖️ Illustrative guidance, not a guarantee. Quorum's verdicts are AI-generated perspectives based on patterns, not predictions of real outcomes, and are not legal, immigration, or financial advice. For visa or legal decisions, consult a licensed attorney.",
-  "id": "qr_0591d02e93e8254b",
+  "id": "qr_ab5426ea1c8c71f0",
   "integrity": {
     "algorithm": "sha256",
-    "content_hash": "0591d02e93e8254b6c5fd6522c5f170e6deea48701f8e468c3fc228c01eae93f"
+    "content_hash": "ab5426ea1c8c71f0611b7a4cb53714ed30bc16324344bbac8437de2fcbfd2a14"
   }
 }

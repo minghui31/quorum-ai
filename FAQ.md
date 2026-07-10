@@ -43,5 +43,5 @@ Nothing. Processed in memory, never stored, never trained on, no telemetry.
 PII (emails/phones/IDs) is regex-redacted before any LLM call (`quorum/privacy.py`).
 
 **Does it work with CAMEL-AI?**
-Yes — `pip install "quorum-ai[camel]"` runs councilors on CAMEL ChatAgents;
+Yes — `pip install "quorum-council[camel]"` runs councilors on CAMEL ChatAgents;
 Quorum's engine owns the protocol, CAMEL owns the agent plumbing.

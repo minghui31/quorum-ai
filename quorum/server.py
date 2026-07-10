@@ -1,6 +1,6 @@
 """FastAPI server — the hosted demo, and how Summit (or anything else) calls Quorum.
 
-    pip install "quorum-ai[server]"
+    pip install "quorum-council[server]"
     uvicorn quorum.server:app --reload
     # or: docker compose up
 

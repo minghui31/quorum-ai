@@ -9,7 +9,7 @@
 - [ ] Topics set; good-first-issue labels created (see below)
 - [ ] Hosted demo off free tier; LLM spend cap set; QUORUM_BACKEND=mock fallback tested
 
-## PyPI publish (makes `pip install quorum-ai` real)
+## PyPI publish (makes `pip install quorum-council` real)
 One-time: create account at pypi.org → enable 2FA → create API token.
 ```bash
 python -m pip install build twine --upgrade

@@ -107,7 +107,7 @@ docker compose up      # → http://localhost:8000
 ```
 
 智能体运行在 [CAMEL-AI](https://github.com/camel-ai/camel) 之上
-（`pip install "quorum-ai[camel]"`），另有 Anthropic / OpenAI 兼容后端，
+（`pip install "quorum-council[camel]"`），另有 Anthropic / OpenAI 兼容后端，
 以及零 Key 的 **mock 模式**，克隆即可运行。
 
 ## 议事会就是一个 YAML 文件

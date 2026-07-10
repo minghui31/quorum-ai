@@ -1,5 +1,5 @@
 # fly.io config — `fly launch --copy-config` then `fly secrets set ANTHROPIC_API_KEY=...`
-app = "quorum-ai"
+app = "quorum-council"
 primary_region = "sjc"
 
 [build]

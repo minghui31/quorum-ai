@@ -66,7 +66,7 @@ def build_record(
         "record_version": RECORD_VERSION,
         "created_at": created,
         "engine": {
-            "name": "quorum-ai",
+            "name": "quorum-council",
             "version": _ENGINE_VERSION,
             "backend": backend_name,
             "protocol": _PROTOCOL,

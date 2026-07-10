@@ -3,7 +3,7 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "quorum-ai"
+name = "quorum-council"
 version = "0.1.0"
 description = "A council of AI agents that deliberate your hardest decisions — and show their work."
 readme = "README.md"
@@ -27,7 +27,7 @@ dependencies = [
 camel = ["camel-ai>=0.2"]
 server = ["fastapi>=0.110", "uvicorn>=0.29", "sse-starlette>=2.0"]
 cli = ["rich>=13.0"]
-all = ["quorum-ai[camel,server,cli]"]
+all = ["quorum-council[camel,server,cli]"]
 
 [project.urls]
 Homepage = "https://github.com/minghui31/quorum-ai"

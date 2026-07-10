@@ -26,7 +26,7 @@ This document is the stability contract for anyone building on the format.
   "record_version": "1.0",          // stability contract — see Versioning
   "id": "qr_285de7c4ad3eb773",      // content-derived, stable, verifiable
   "created_at": "2026-07-06T09:00:00+00:00",
-  "engine":  { "name": "quorum-ai", "version": "0.1.0", "backend": "anthropic",
+  "engine":  { "name": "quorum-council", "version": "0.1.0", "backend": "anthropic",
                "protocol": "brief/openings/cross-exam/vote/verdict v1" },
   "case":    { "title": "...", "body": "...(post-redaction)...",
                "council": "careers", "language": "en", "context": {} },

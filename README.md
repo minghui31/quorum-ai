@@ -131,7 +131,7 @@ docker compose up      # → http://localhost:8000
 ```
 
 Agents run on [CAMEL-AI](https://github.com/camel-ai/camel)'s agent substrate
-(`pip install "quorum-ai[camel]"`), with direct Anthropic / OpenAI-compatible
+(`pip install "quorum-council[camel]"`), with direct Anthropic / OpenAI-compatible
 backends and a deterministic **mock mode** so the repo runs anywhere, instantly.
 
 ## Councils are just YAML
@@ -159,7 +159,7 @@ print(v.decision, v.vote_tally, v.dissent, v.action_plan)
 ```
 
 ```bash
-pip install "quorum-ai[server]" && uvicorn quorum.server:app
+pip install "quorum-council[server]" && uvicorn quorum.server:app
 # POST /deliberate · GET /deliberate/stream (SSE) · GET /councils · GET /stats
 ```
 
