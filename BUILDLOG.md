@@ -246,3 +246,28 @@
   server.py:14 confirms in-memory only / never persisted, illustrative-only
   labels live on GitHub README. ✅ CLA counsel review owed pre-1.0 — L&E Clinic
   silent since Jul 4 intake; today (Jul 10) is the chase deadline — follow up.
+
+## Day 11 check-in — 2026-07-13 (calendar Day 11; launch T-1)
+- Since Day 8: THE PYPI BLOCKER IS CLEARED. Package renamed quorum-ai →
+  quorum-council (PyPI name conflict), published live: 0.1.0/0.1.1/0.1.2 on
+  PyPI (`pip install quorum-council` verified working). Clean-venv test caught
+  a real bug (demo case files missing from wheel → 0.1.1/0.1.2). Tags v0.1.0 +
+  v0.1.2 pushed. Brand domain quorum-council.com wired (OG tags, READMEs, PyPI
+  urls; onrender URL kept as fallback). Founder cheat sheet exists (o1/43).
+  Everything pushed — origin current at e55b1e1, zero unpushed commits.
+- ⚠️ Zero commits Jul 11–12 (two silent days at T-3/T-2). GitHub Releases page
+  still empty (tags exist, no Release notes — 5-min fix, looks dead otherwise).
+- ⚠️ Still open at T-1: hostile-commenter drill ×1; CAMEL "Built with" PR /
+  Discord showcase (now-or-never for launch-day referral traffic); Reddit
+  warm-up effectively missed — lean HN + 小红书 as planned. L&E Clinic silent
+  since Jul 4 intake; chase deadline (Jul 10) passed — follow up TODAY.
+- 🎯 Today (T-1, only launch-critical): (1) full launch dry-run — verify
+  quorum-council.com + hosted demo end-to-end with real key, counter floor,
+  IP limit, verdict card, waitlist; finalize post copy from kit v2 with exact
+  post times (8:30am CDT); (2) create GitHub Release for v0.1.2 + push this
+  check-in; (3) cheat-sheet drill ×1 + CAMEL "Built with" PR + Discord
+  showcase post.
+- GitHub: 0 stars / 0 forks / 0 watchers. Launch Tue Jul 14 8:30am CDT (T-1).
+- Legal: attorney pointers intact (i18n.py ×2 refs), redact() pre-LLM
+  (engine.py:123), server.py:14 in-memory only / never persisted,
+  illustrative-only labels live on README. ✅ CLA counsel review owed pre-1.0.
