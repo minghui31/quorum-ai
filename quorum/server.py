@@ -151,19 +151,22 @@ def _has_real_backend() -> bool:
     return bool(os.environ.get("ANTHROPIC_API_KEY") or os.environ.get("OPENAI_API_KEY"))
 
 
-def _run_with_fallback(fn_real, fn_mock, q: queue.Queue) -> None:
+def _run_with_fallback(fn_real, fn_mock, q: queue.Queue, bump: bool = True) -> None:
     """Run the real deliberation; if the model API fails (credits exhausted,
     overloaded, auth), tell the client honestly and replay in mock mode so the
-    demo NEVER breaks — the failure state itself converts to `pip install`."""
+    demo NEVER breaks — the failure state itself converts to `pip install`.
+    bump=False when the caller counts per-council instead (ensembles)."""
     try:
         fn_real()
-        _bump()
+        if bump:
+            _bump()
     except Exception as exc:
         if _has_real_backend():
             q.put({"type": "fallback", "message": str(exc)[:120]})
             try:
                 fn_mock()
-                _bump()
+                if bump:
+                    _bump()
             except Exception as exc2:
                 q.put({"type": "error", "message": str(exc2)})
         else:
@@ -255,11 +258,17 @@ async def simulate_stream(request: Request, title: str, body: str, council: str 
     q: queue.Queue = queue.Queue()
     case = Case(title=title, body=body, council=council, language=language)
 
+    def onev(e):
+        q.put(e)
+        if e.get("type") == "run":  # "councils convened" counts every council, not every click
+            _bump()
+
     def work():
         _run_with_fallback(
-            lambda: mc_simulate(case, load_council(council), runs=runs, backend=ens_backend, on_event=q.put),
-            lambda: mc_simulate(case, load_council(council), runs=runs, backend=MockBackend(), on_event=q.put),
+            lambda: mc_simulate(case, load_council(council), runs=runs, backend=ens_backend, on_event=onev),
+            lambda: mc_simulate(case, load_council(council), runs=runs, backend=MockBackend(), on_event=onev),
             q,
+            bump=False,
         )
 
     threading.Thread(target=work, daemon=True).start()
