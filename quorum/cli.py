@@ -64,6 +64,27 @@ def _render(event: dict, lang_holder: dict) -> None:
             print("\n=== VERDICT ===\n" + body.replace("[bold]", "").replace("[/bold]", "").replace("[dim]", "").replace("[/dim]", ""))
 
 
+def _render_markdown(verdict) -> str:
+    """Render a verdict as Markdown for CLI stdout output."""
+    to_dict = getattr(verdict, "to_dict", None)
+    data = to_dict() if callable(to_dict) else dict(verdict)
+
+    lines = [f"# {data['decision']}", "", data["summary"], "", "## Vote Tally", "| Stance | Count |", "| --- | ---: |"]
+    for stance, count in data["vote_tally"].items():
+        lines.append(f"| {stance} | {count} |")
+
+    lines.extend(["", "## Dissent"])
+    for part in str(data["dissent"]).splitlines() or [""]:
+        lines.append(f"> {part}")
+
+    lines.extend(["", "## Action Plan"])
+    for i, step in enumerate(data["action_plan"], 1):
+        lines.append(f"{i}. {step}")
+
+    lines.extend(["", "---", data["disclaimer"]])
+    return "\n".join(lines)
+
+
 def _load_case(path: str) -> Case:
     d = yaml.safe_load(Path(path).read_text(encoding="utf-8"))
     return Case(
@@ -125,6 +146,8 @@ def main(argv: list[str] | None = None) -> int:
     d.add_argument("case", help="Path to a case YAML file")
     d.add_argument("--backend", choices=["anthropic", "openai", "camel", "mock"], default=None)
     d.add_argument("--json", action="store_true", help="Print the verdict as JSON")
+    d.add_argument("--output", choices=["markdown"], default=None,
+                   help="Print the verdict as Markdown")
     d.add_argument("--record", metavar="PATH", default=None,
                    help="Save the full Decision Record (versioned, auditable JSON) to PATH")
 
@@ -132,6 +155,8 @@ def main(argv: list[str] | None = None) -> int:
     demo.add_argument("--backend", choices=["anthropic", "openai", "camel", "mock"], default=None)
     demo.add_argument("--serious", action="store_true", help="Run the serious careers demo instead")
     demo.add_argument("--json", action="store_true")
+    demo.add_argument("--output", choices=["markdown"], default=None,
+                      help="Print the verdict as Markdown")
     demo.add_argument("--record", metavar="PATH", default=None,
                       help="Save the full Decision Record (versioned, auditable JSON) to PATH")
 
@@ -173,7 +198,7 @@ def main(argv: list[str] | None = None) -> int:
         verdict = deliberate(
             case,
             backend=auto_backend(args.backend),
-            on_event=None if args.json else (lambda e: _render(e, lang_holder)),
+            on_event=None if args.json or args.output == "markdown" else (lambda e: _render(e, lang_holder)),
         )
     except Exception as exc:
         msg = str(exc)
@@ -189,6 +214,8 @@ def main(argv: list[str] | None = None) -> int:
         raise
     if args.json:
         print(json.dumps(verdict.to_dict(), ensure_ascii=False, indent=2))
+    elif args.output == "markdown":
+        print(_render_markdown(verdict))
     if getattr(args, "record", None):
         Path(args.record).write_text(
             json.dumps(verdict.record, ensure_ascii=False, indent=2), encoding="utf-8")
