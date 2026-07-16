@@ -271,3 +271,53 @@
 - Legal: attorney pointers intact (i18n.py ×2 refs), redact() pre-LLM
   (engine.py:123), server.py:14 in-memory only / never persisted,
   illustrative-only labels live on README. ✅ CLA counsel review owed pre-1.0.
+
+## Day 12 check-in — 2026-07-14 (LAUNCH DAY; check-in ran 3pm CDT)
+- Since Day 11: ZERO commits. The 8:30am CDT launch window passed ~6.5h before
+  this run with no repo signal of a launch: 0 stars / 0 forks / 0 watchers,
+  Releases page still empty, no launch-day activity. Either the launch slipped
+  or went out with no traction yet — status unknown from the repo alone.
+- ⚠️ 1 commit unpushed (76deb88 Day 11 check-in) — origin at e55b1e1.
+- ⚠️ GitHub Release for v0.1.2 still not created (tags exist; "No releases
+  published" looks dead to launch-day visitors — 5-min fix).
+- Note: logged-out GitHub fetch served a STALE cached README (old quorum-ai pip
+  refs, no GIF, "5 commits") — same CDN artifact as Jul 5. Local tree verified
+  correct (quorum-council refs at README:134,162). Worth a hard-refresh check
+  in an incognito window before/at launch.
+- 🎯 Today: (1) DECIDE: launch is still viable today — HN takes posts all day
+  (morning window preferred, not required) — or slip to Wed/Thu Jul 15–16,
+  still inside the Tue–Thu window; don't let it drift past Thu. (2) git push
+  76deb88 + create GitHub Release v0.1.2 + incognito-verify live README before
+  posting. (3) Post per kit v2 (Show HN + 小红书 essay simultaneously), then
+  live comment-reply mode.
+- Legal: attorney pointers intact (i18n.py:9,19), redact() pre-LLM
+  (engine.py:123), server.py docstring confirms in-memory only / waitlist
+  plain-local / never trained on, illustrative-only labels in README. ✅
+  CLA counsel review still owed pre-1.0; L&E Clinic silent since Jul 4 —
+  10 days, follow up again.
+
+## Day 13 check-in — 2026-07-15 (Wed; launch window closes TOMORROW)
+- Since Day 12: ZERO commits, zero repo signal of a launch. 0 stars / 0 forks /
+  0 watchers, Releases page still empty. Yesterday's Day 12 BUILDLOG entry was
+  left uncommitted in the working tree (folded into this commit). 76deb88
+  still unpushed — origin at e55b1e1.
+- ✅ Verified via git ls-remote: origin/main IS current (e55b1e1) and tags
+  v0.1.0 + v0.1.2 exist on GitHub — the repo itself is launch-ready. The
+  logged-out page STILL renders a stale artifact ("5 commits", old quorum-ai
+  pip refs) — 10 days stale is abnormal for GitHub's cache; verify in a real
+  incognito browser and if still stale, a trivial push (this check-in) should
+  force a re-render.
+- 🎯 Today (T-0 effectively — Thu is the last day in the Tue–Thu window,
+  leaving no slip room): (1) LAUNCH TODAY: git push (this commit + 76deb88,
+  doubles as cache-buster) → create GitHub Release for v0.1.2 → incognito-
+  verify live README → post Show HN + 小红书 essay per kit v2 (HN accepts
+  posts all day; don't wait for a perfect window that already passed);
+  (2) live comment-reply mode w/ founder cheat sheet (o1/43) at hand;
+  (3) if anything blocks, launch Thu morning 8:30am CDT — final call, do not
+  let it drift past Thu.
+- Legal: verified this run — attorney pointers intact (i18n.py:9,19), redact()
+  pre-LLM (engine.py:123), server.py docstring: in-memory only, waitlist
+  plain-local, never trained on; README quorum-council refs correct locally
+  (134,162), zero stale quorum-ai pip refs. CLA counsel review still owed
+  pre-1.0; L&E Clinic silent 11 days since Jul 4 intake — chase again.
+- GitHub: 0 stars / 0 forks / 0 watchers. No releases published.
